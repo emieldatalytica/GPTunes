@@ -8,6 +8,8 @@ aiohttp==3.8.4
     # via openai
 aiosignal==1.3.1
     # via aiohttp
+anyio==3.6.2
+    # via starlette
 async-timeout==4.0.2
     # via
     #   aiohttp
@@ -22,6 +24,10 @@ charset-normalizer==3.1.0
     # via
     #   aiohttp
     #   requests
+click==8.1.3
+    # via uvicorn
+fastapi==0.95.1
+    # via GPTunes (setup.cfg)
 frozenlist==1.3.3
     # via
     #   aiohttp
@@ -45,8 +51,11 @@ google-resumable-media==2.4.1
     # via google-cloud-storage
 googleapis-common-protos==1.59.0
     # via google-api-core
+h11==0.14.0
+    # via uvicorn
 idna==3.4
     # via
+    #   anyio
     #   requests
     #   yarl
 multidict==6.0.4
@@ -69,6 +78,8 @@ pyasn1==0.4.8
     #   rsa
 pyasn1-modules==0.2.8
     # via google-auth
+pydantic==1.10.7
+    # via fastapi
 python-dateutil==2.8.2
     # via pandas
 pytz==2023.3
@@ -89,15 +100,25 @@ six==1.16.0
     #   google-auth
     #   python-dateutil
     #   spotipy
+sniffio==1.3.0
+    # via anyio
 spotipy==2.23.0
     # via GPTunes (setup.cfg)
+starlette==0.26.1
+    # via fastapi
 tqdm==4.65.0
     # via openai
+typing-extensions==4.5.0
+    # via
+    #   pydantic
+    #   starlette
 tzdata==2023.3
     # via pandas
 urllib3==1.26.15
     # via
     #   requests
     #   spotipy
+uvicorn==0.21.1
+    # via GPTunes (setup.cfg)
 yarl==1.8.2
     # via aiohttp
