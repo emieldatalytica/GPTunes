@@ -1,0 +1,25 @@
+[build-system]
+requires = ["setuptools", "wheel", "pip-tools"]
+build-backend = "setuptools.build_meta"
+
+[tool.black]
+line-length = 120
+target-version = ["py39"]
+
+[tool.isort]
+line_length = 120
+profile = "black"
+
+[tool.flake8]
+max-line-length = 120
+max-complexity = 10
+docstring-convention = "google"
+
+[tool.mypy]
+python_version = "3.9"
+warn_unused_configs = true
+disallow_untyped_defs = true
+ignore_missing_imports = true
+disable_error_code = [
+    "attr-defined"
+]
