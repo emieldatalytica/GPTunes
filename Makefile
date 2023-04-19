@@ -7,4 +7,4 @@ ci:
 	python -m black --version
 	python -m black src
 	python -m flake8 --version
-	python -m flake8 src
+	python -m flake8 src --max-line-length=120
