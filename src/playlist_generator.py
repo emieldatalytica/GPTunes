@@ -1,6 +1,5 @@
 """Generate a playlist with OpenAI's GPT API based on a given theme."""
 
-import logging
 import os
 
 import fastapi
@@ -8,19 +7,13 @@ import openai
 
 from prompt import INITIAL_PROMPT
 from theme_picker import get_random_city
-from utils import SpotifyClient, extract_json_from_response
+from utils import SpotifyClient, extract_json_from_response, get_logger
 
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
 playlist_generator = fastapi.FastAPI()
 spotify_client = SpotifyClient()
-
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.INFO)
-formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
-stream_handler = logging.StreamHandler()
-stream_handler.setFormatter(formatter)
-logger.addHandler(stream_handler)
+logger = get_logger(__name__)
 
 
 @playlist_generator.get("/query_gpt_model")

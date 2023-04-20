@@ -1,10 +1,31 @@
 """Utility functions and classes used in other scripts."""
 
 import json
+import logging
 
 import spotipy
 from google.cloud import secretmanager
 from spotipy.oauth2 import CacheHandler, SpotifyOAuth
+
+
+def get_logger(name: str) -> logging.Logger:
+    """Instantiate a logger object with the given name.
+
+    Args:
+        name (str): The name of the logger.
+    Returns:
+        logging.Logger: The logger object.
+    """
+    logger = logging.getLogger(name)
+    logger.setLevel(logging.INFO)
+    formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+    stream_handler = logging.StreamHandler()
+    stream_handler.setFormatter(formatter)
+    logger.addHandler(stream_handler)
+    return logger
+
+
+logger = get_logger(__name__)
 
 
 def extract_json_from_response(response: str) -> str:
@@ -37,6 +58,7 @@ class SpotifyClient:
                 scope="playlist-modify-public",
             )
         )
+        logger.info("Spotify client instantiated.")
 
     @staticmethod
     def access_secret_version(secret_version_id: str) -> str:

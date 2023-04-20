@@ -2,11 +2,13 @@
 
 import fastapi
 
-from utils import SpotifyClient
+from utils import SpotifyClient, get_logger
 
 spotify_client = SpotifyClient()
 
 playlist_publisher = fastapi.FastAPI()
+
+logger = get_logger(__name__)
 
 
 @playlist_publisher.post("/publish")
@@ -35,5 +37,8 @@ def publish_playlist_to_spotify(playlist: dict) -> str:
         tracks=playlist["tracks"],
     )
 
-    return f"""Your new playlist {new_playlist["title"]} has been created!
+    user_message = f"""A new playlist {new_playlist["title"]} has been created!
             Check it out here: {new_playlist['external_urls']['spotify']}"""
+
+    logger.info(user_message)
+    return user_message
