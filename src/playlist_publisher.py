@@ -2,9 +2,7 @@
 
 import fastapi
 
-from utils import SpotifyClient, get_logger
-
-spotify_client = SpotifyClient()
+from utils import get_logger, spotify_client
 
 playlist_publisher = fastapi.FastAPI()
 
@@ -32,9 +30,9 @@ def publish_playlist_to_spotify(playlist: dict) -> str:
 
     # add the tracks to the playlist
     spotify_client.spotify.user_playlist_add_tracks(
-        user=new_playlist["user_id"],
+        user=spotify_client.spotify.current_user()["id"],
         playlist_id=new_playlist["id"],
-        tracks=playlist["tracks"],
+        tracks=playlist["playlist"],
     )
 
     user_message = f"""A new playlist {new_playlist["title"]} has been created!

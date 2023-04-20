@@ -93,3 +93,6 @@ class GoogleCacheHandler(CacheHandler):
         """Save a token_info dictionary object to the cache and return None."""
         # TO-DO: update dot-cache with refreshed token
         return None
+
+
+spotify_client = SpotifyClient()
