@@ -1,5 +1,7 @@
 """Utility functions and classes used in other scripts."""
 
+import json
+
 import spotipy
 from google.cloud import secretmanager
 from spotipy.oauth2 import SpotifyClientCredentials
@@ -14,9 +16,8 @@ def extract_json_from_response(response: str) -> str:
     Returns:
         str: The extracted json.
     """
-    start = response.find("```") + 3
-    end = response.find("```", start)
-    return response[start:end]
+    json_str = response.strip("`").strip().replace("\n", "")
+    return json.loads(json_str)
 
 
 class SpotifyClient:
