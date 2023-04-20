@@ -12,7 +12,7 @@ from utils import SpotifyClient, extract_json_from_response
 
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
-app = fastapi.FastAPI()
+playlist_generator = fastapi.FastAPI()
 spotify_client = SpotifyClient()
 
 logger = logging.getLogger(__name__)
@@ -23,7 +23,7 @@ stream_handler.setFormatter(formatter)
 logger.addHandler(stream_handler)
 
 
-@app.get("/query_model")
+@playlist_generator.get("/query_gpt_model")
 def query_model_for_playlist(theme: str) -> str:
     """Generate a playlist with OpenAI's GPT API based on a given theme.
 
@@ -67,7 +67,7 @@ def map_tracks_to_spotify_ids(tracks: dict) -> dict:
     return mapped_tracks
 
 
-@app.get("/playlist")
+@playlist_generator.get("/playlist")
 def compose_playlist(theme: str) -> dict:
     """Compose a playlist for a given theme.
 
