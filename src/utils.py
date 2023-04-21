@@ -5,7 +5,7 @@ import logging
 
 import spotipy
 from google.cloud import secretmanager
-from spotipy.oauth2 import CacheHandler, SpotifyOAuth
+from spotipy.oauth2 import CacheHandler, SpotifyClientCredentials, SpotifyOAuth
 
 
 def get_logger(name: str) -> logging.Logger:
@@ -45,10 +45,11 @@ class SpotifyClient:
     """Class that instantiates a Spotify client to interact with the API."""
 
     def __init__(self) -> None:
-        cid = self.access_secret_version("projects/420207002838/secrets/SPOTIFY_CLIENT_ID/versions/1")
-        secret = self.access_secret_version("projects/420207002838/secrets/SPOTIFY_CLIENT_SECRET/versions/1")
-        redirect_uri = self.access_secret_version("projects/420207002838/secrets/SPOTIFY_REDIRECT_URI/versions/latest")
+        cid = self.access_secret_version("projects/420207002838/secrets/SPOTIFY_CLIENT_ID/versions/2")
+        secret = self.access_secret_version("projects/420207002838/secrets/SPOTIFY_CLIENT_SECRET/versions/2")
+        redirect_uri = self.access_secret_version("projects/420207002838/secrets/SPOTIFY_REDIRECT_URI/versions/2")
 
+        self.spotify_unscoped = spotipy.Spotify(SpotifyClientCredentials(client_id=cid, client_secret=secret))
         self.spotify = spotipy.Spotify(
             auth_manager=SpotifyOAuth(
                 client_id=cid,

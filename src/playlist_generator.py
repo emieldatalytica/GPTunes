@@ -46,16 +46,17 @@ def map_tracks_to_spotify_ids(tracks: dict) -> dict:
     """
     mapped_tracks = {}
     for artist, track in tracks.items():
-        result = spotify_client.spotify.search(f"{artist} - {track}", type="track", limit=1)
+        result = spotify_client.spotify_unscoped.search(f"{artist} - {track}", type="track", limit=1)
         if result is None:
             # search again on only track name
-            result = spotify_client.spotify.search(f"{track}", type="track", limit=1)
+            result = spotify_client.spotify_unscoped.search(f"{track}", type="track", limit=1)
         if result is None:
             continue
         items = result.get("tracks", {}).get("items", [])
         if not items:
             continue
         mapped_tracks[track] = items[0]["id"]
+    logger.info(f"Mapped {len(mapped_tracks.values())} tracks to spotify ids.")
     return mapped_tracks
 
 
@@ -72,12 +73,12 @@ def compose_playlist(theme: str) -> dict:
         theme = get_random_city()
     logger.info(f"Given theme: '{theme}'")
     gpt_response = query_model_for_playlist(theme)
-    print(gpt_response)
     playlist_json = extract_json_from_response(gpt_response)
-    print(playlist_json)
+
     assert isinstance(playlist_json, dict)
-    assert "playlist" in playlist_json.keys()
-    assert "description" in playlist_json.keys()
+    assert all(key in playlist_json.keys() for key in ["playlist", "title", "description"])
+    logger.info(f"Extracted playlist with {len(playlist_json['playlist'].keys())} tracks from GPT response.")
+
     track_ids = map_tracks_to_spotify_ids(playlist_json["playlist"])
     playlist_json["playlist"] = list(track_ids.values())
     logger.info(playlist_json)
