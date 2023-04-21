@@ -13,7 +13,8 @@ INITIAL_PROMPT = """
                 "Kanye West": "Power",
                 "Lil Wayne": "A Milli",
             },
-            "description": "Welcome to this week's playlist, 'The Trump Shuffle'! We're getting political and poking a little fun at the former president with some tracks that we think might resonate. First up, we've got 'American Idiot' by Green Day - after all the man is American and some people might consider him an 'idiot'. Next, we've got 'Power' by Kanye West, which is all about success and wealth, two things Trump has certainly been associated with. And finally, we've got 'A Milli' by Lil Wayne, a song about making bank and being on top - something Trump is known for. So let's groove to these tunes and let the political commentary flow!"
+            "title": "The Trump Shuffle",
+            "description": "Welcome to the AI-generated playlist for the theme "Donald Trump"! We're poking a little fun at the former president with some tracks that we think might resonate. Take 'American Idiot' by Green Day for instance - after all the man is American and some people might consider him an 'idiot'. Enjoy!"
         }
         ```
         User: Give me 10 songs relating to the subject "{theme}" and give a playful description for this weeks themed playlist.
