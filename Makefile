@@ -1,4 +1,4 @@
-.PHONY: ci container dependencies
+.PHONY: ci container dependencies infra
 
 # Format code using black and lint with flake8
 ci:
@@ -20,3 +20,11 @@ container:
 dependencies:
 	pip-compile setup.cfg
 	pip install -r requirements.txt
+
+# Build GCP infrastructure with Terraform
+infra:
+	terraform fmt
+	terraform init
+	terraform validate
+	terraform plan -out tfplan -var-file=envs/dev/config.tfvars
+	terraform apply tfplan
