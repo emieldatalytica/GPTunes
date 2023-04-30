@@ -10,10 +10,16 @@ variable "gcp_project" {
   default     = "gptunes-dev"
 }
 
-variable "spotify_credentials_id_version" {
-  description = "Spotify credentials ID version"
+variable "spotify_client_id_version" {
+  description = "Spotify client ID version"
   type        = string
   default     = "cdc61e7993f04025a0be714ce2bd1760"
+}
+
+variable "spotify_client_secret_version" {
+  type      = string
+  default   = ""
+  sensitive = true
 }
 
 variable "spotify_redirect_uri_version" {

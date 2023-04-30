@@ -7,7 +7,19 @@ resource "google_secret_manager_secret" "spotify_client_id" {
 
 resource "google_secret_manager_secret_version" "spotify_client_id_version" {
   secret      = google_secret_manager_secret.spotify_client_id.name
-  secret_data = var.spotify_credentials_id_version
+  secret_data = var.spotify_client_id_version
+}
+
+resource "google_secret_manager_secret" "spotify_client_secret" {
+  secret_id = "SPOTIFY_CLIENT_SECRET"
+  replication {
+    automatic = true
+  }
+}
+
+resource "google_secret_manager_secret_version" "spotify_client_secret_version" {
+  secret      = google_secret_manager_secret.spotify_client_secret.name
+  secret_data = var.spotify_client_secret_version
 }
 
 resource "google_secret_manager_secret" "spotify_redirect_uri" {
