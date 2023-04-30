@@ -2,6 +2,7 @@
 
 import json
 import logging
+import os
 
 import spotipy
 from google.cloud import secretmanager
@@ -44,10 +45,17 @@ def extract_json_from_response(response: str) -> str:
 class SpotifyClient:
     """Class that instantiates a Spotify client to interact with the API."""
 
-    def __init__(self) -> None:
-        cid = self.access_secret_version("projects/420207002838/secrets/SPOTIFY_CLIENT_ID/versions/2")
-        secret = self.access_secret_version("projects/420207002838/secrets/SPOTIFY_CLIENT_SECRET/versions/2")
-        redirect_uri = self.access_secret_version("projects/420207002838/secrets/SPOTIFY_REDIRECT_URI/versions/2")
+    def __init__(self, env: str = "dev") -> None:
+        # TO-DO: add support for main environment
+        if env == "dev":
+            self.env_id = os.getenv("GPTUNES_DEV_ENV_ID")
+        elif env == "main":
+            self.env_id = os.getenv("GPTUNES_MAIN_ENV_ID")
+        else:
+            raise ValueError("env must be either 'dev' or 'main'")
+        cid = self.access_secret_version(str(self.env_id), "SPOTIFY_CLIENT_ID")
+        secret = self.access_secret_version(str(self.env_id), "SPOTIFY_CLIENT_SECRET")
+        redirect_uri = self.access_secret_version(str(self.env_id), "SPOTIFY_REDIRECT_URI")
 
         self.spotify_unscoped = spotipy.Spotify(SpotifyClientCredentials(client_id=cid, client_secret=secret))
         self.spotify = spotipy.Spotify(
@@ -55,26 +63,26 @@ class SpotifyClient:
                 client_id=cid,
                 client_secret=secret,
                 redirect_uri=redirect_uri,
-                cache_handler=GoogleCacheHandler(),
+                cache_handler=GoogleCacheHandler(env_id=str(self.env_id)),
                 scope="playlist-modify-public",
             )
         )
         logger.info("Spotify client instantiated.")
 
     @staticmethod
-    def access_secret_version(secret_version_id: str) -> str:
+    def access_secret_version(env_id: str, secret_name: str) -> str:
         """Return the value of a secret's version.
 
         Args:
-            secret_version_id: the id of the secret version in the secret manager
+            env_id (str): The environment ID of the secret.
+            secret_name (str): The name of the secret.
 
         Returns:
             object: the secret decoded in utf-8
         """
         client = secretmanager.SecretManagerServiceClient()
-
+        secret_version_id = f"projects/{env_id}/secrets/{secret_name}/versions/latest"
         response = client.access_secret_version(name=secret_version_id)
-
         return response.payload.data.decode("UTF-8")
 
 
@@ -84,10 +92,16 @@ class GoogleCacheHandler(CacheHandler):
     This implementation loads and saves the cached access tokens to GCP.
     """
 
+    def __init__(self, env_id: str) -> None:
+        super().__init__()
+        self.env_id = env_id
+
     def get_cached_token(self) -> dict:
         """Get and return a token_info dictionary object."""
         return json.loads(
-            SpotifyClient.access_secret_version("projects/420207002838/secrets/DOT-CACHE/versions/latest")
+            SpotifyClient.access_secret_version(
+                env_id=self.env_id, secret_name="projects/420207002838/secrets/DOT-CACHE/versions/latest"
+            )
         )
 
     def save_token_to_cache(self, token_info: dict) -> None:
