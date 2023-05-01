@@ -1,3 +1,12 @@
+resource "google_secret_manager_secret_iam_member" "all_secrets_access" {
+  for_each = toset(["SPOTIFY_CLIENT_ID", "SPOTIFY_CLIENT_SECRET", "SPOTIFY_REDIRECT_URI", ])
+
+  project   = var.gcp_project
+  secret_id = each.key
+  role      = "roles/secretmanager.secretAccessor"
+  member    = "serviceAccount:${var.gcp_service_account}"
+}
+
 resource "google_secret_manager_secret" "spotify_client_id" {
   secret_id = "SPOTIFY_CLIENT_ID"
   replication {

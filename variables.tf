@@ -10,6 +10,12 @@ variable "gcp_project" {
   default     = "gptunes-dev"
 }
 
+variable "gcp_service_account" {
+  description = "GCP service account"
+  type        = string
+  default     = ""
+}
+
 variable "spotify_client_id_version" {
   description = "Spotify client ID version"
   type        = string
