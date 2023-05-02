@@ -1,13 +1,14 @@
 """Generate a playlist with OpenAI's GPT API based on a given theme."""
 
 import os
+from typing import Any
 
 import fastapi
 import openai
 
 from prompt import INITIAL_PROMPT
 from theme_picker import get_random_city
-from utils import extract_json_from_response, get_logger, spotify_client
+from utils import Playlist, extract_json_from_response, get_logger, spotify_client
 
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
@@ -46,10 +47,10 @@ def map_tracks_to_spotify_ids(tracks: dict) -> dict:
     """
     mapped_tracks = {}
     for artist, track in tracks.items():
-        result = spotify_client.spotify_unscoped.search(f"{artist} - {track}", type="track", limit=1)
+        result = spotify_client.spotify.search(f"{artist} - {track}", type="track", limit=1)
         if result is None:
             # search again on only track name
-            result = spotify_client.spotify_unscoped.search(f"{track}", type="track", limit=1)
+            result = spotify_client.spotify.search(f"{track}", type="track", limit=1)
         if result is None:
             continue
         items = result.get("tracks", {}).get("items", [])
@@ -60,14 +61,14 @@ def map_tracks_to_spotify_ids(tracks: dict) -> dict:
     return mapped_tracks
 
 
-@playlist_generator.get("/playlist")
-def compose_playlist(theme: str) -> dict:
+@playlist_generator.get("/playlist", response_model=Playlist)
+def compose_playlist(theme: str) -> Any:
     """Compose a playlist for a given theme.
 
     Args:
         theme (str): The theme of the playlist. If empty, a random theme is picked.
     Returns:
-        dict: The track ids of the composed playlist and the description.
+        Playlist: The composed playlist with tracks, title and description.
     """
     if not theme:
         theme = get_random_city()
@@ -76,10 +77,11 @@ def compose_playlist(theme: str) -> dict:
     playlist_json = extract_json_from_response(gpt_response)
 
     assert isinstance(playlist_json, dict)
-    assert all(key in playlist_json.keys() for key in ["playlist", "title", "description"])
-    logger.info(f"Extracted playlist with {len(playlist_json['playlist'].keys())} tracks from GPT response.")
+    assert all(key in playlist_json.keys() for key in ["tracks", "title", "description"])
+    logger.info(f"Extracted playlist with {len(playlist_json['tracks'].keys())} tracks from GPT response.")
 
-    track_ids = map_tracks_to_spotify_ids(playlist_json["playlist"])
-    playlist_json["playlist"] = list(track_ids.values())
+    track_ids = map_tracks_to_spotify_ids(playlist_json["tracks"])
+    playlist_json["tracks"] = list(track_ids.values())
     logger.info(playlist_json)
-    return playlist_json
+    playlist = Playlist(**playlist_json)
+    return playlist

@@ -19,6 +19,6 @@ def create_themed_playlist(theme: str) -> str:
         str: A message informing the user that the playlist has been successfully updated.
     """
     playlist = compose_playlist(theme=theme)
-    logger.info(f"Sending playlist titled '{playlist['title']}' to publisher-service.")
+    logger.info(f"Sending playlist titled '{playlist.title}' to publisher-service.")
     message = publish_playlist_to_spotify(playlist)
     return message

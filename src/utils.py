@@ -140,9 +140,6 @@ class GoogleCacheHandler(CacheHandler):
         return None
 
 
-spotify_client = SpotifyClient()  # tmp
-
-# code that uses argparse to parse argument 'refresh_token'
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument(
