@@ -42,3 +42,15 @@ resource "google_secret_manager_secret_version" "spotify_redirect_uri_version" {
   secret      = google_secret_manager_secret.spotify_redirect_uri.name
   secret_data = var.spotify_redirect_uri_version
 }
+
+resource "google_secret_manager_secret" "spotify_oauth_cache_secret" {
+  secret_id = "DOT-CACHE"
+  replication {
+    automatic = true
+  }
+}
+
+resource "google_secret_manager_secret_version" "spotify_oauth_cache_secret_version" {
+  secret      = google_secret_manager_secret.spotify_oauth_cache_secret.name
+  secret_data = file("src/.cache")
+}

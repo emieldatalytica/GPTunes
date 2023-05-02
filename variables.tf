@@ -19,7 +19,7 @@ variable "gcp_service_account" {
 variable "spotify_client_id_version" {
   description = "Spotify client ID version"
   type        = string
-  default     = "cdc61e7993f04025a0be714ce2bd1760"
+  default     = ""
 }
 
 variable "spotify_client_secret_version" {
