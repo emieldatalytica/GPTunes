@@ -1,5 +1,5 @@
 resource "google_secret_manager_secret_iam_member" "all_secrets_access" {
-  for_each = toset(["SPOTIFY_CLIENT_ID", "SPOTIFY_CLIENT_SECRET", "SPOTIFY_REDIRECT_URI", ])
+  for_each = toset(["SPOTIFY_CLIENT_ID", "SPOTIFY_CLIENT_SECRET", "SPOTIFY_REDIRECT_URI", "DOT-CACHE"])
 
   project   = var.gcp_project
   secret_id = each.key
@@ -52,5 +52,5 @@ resource "google_secret_manager_secret" "spotify_oauth_cache_secret" {
 
 resource "google_secret_manager_secret_version" "spotify_oauth_cache_secret_version" {
   secret      = google_secret_manager_secret.spotify_oauth_cache_secret.name
-  secret_data = file("src/.cache")
+  secret_data = file(".cache")
 }
