@@ -35,6 +35,9 @@ def publish_playlist_to_spotify(playlist: Playlist) -> str:
         tracks=playlist.tracks,
     )
 
+    # upload the cover image
+    spotify_client.spotify.playlist_upload_cover_image(playlist_id=new_playlist["id"], image_b64=playlist.cover_image)
+
     user_message = f"""A new playlist {playlist.title} has been created!
             Check it out here: {new_playlist['external_urls']['spotify']}"""
 

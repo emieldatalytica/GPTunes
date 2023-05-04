@@ -16,6 +16,7 @@ class Playlist(BaseModel):
 
     title: str
     description: str = Field(max_length=1000)
+    cover_image: str
     tracks: list
 
 
@@ -74,7 +75,7 @@ class SpotifyClient:
         cid = self.access_secret_version(self.env_id, "SPOTIFY_CLIENT_ID")
         secret = self.access_secret_version(self.env_id, "SPOTIFY_CLIENT_SECRET")
         redirect_uri = self.access_secret_version(self.env_id, "SPOTIFY_REDIRECT_URI")
-        scope = "playlist-modify-public"
+        scope = "playlist-modify-public ugc-image-upload"
 
         self.spotify = spotipy.Spotify(
             auth_manager=SpotifyOAuth(

@@ -11,7 +11,7 @@ main = fastapi.FastAPI()
 logger = get_logger(__name__)
 
 
-@main.post("/weekly_themed_playlist")
+@main.post("/create_themed_playlist")
 def create_themed_playlist(theme: str) -> str:
     """Create a themed playlist on a weekly basis.
 

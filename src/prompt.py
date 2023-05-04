@@ -20,3 +20,5 @@ INITIAL_PROMPT = """
         User: Give me 10 tracks relating to the subject '{theme}' and give a playful description (max. 300 characters) for this weeks themed playlist.
         Assistant:
         """
+
+DALLE_PROMPT = "'{playlist_title}', music, digital art"

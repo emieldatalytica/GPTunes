@@ -1,12 +1,15 @@
 """Generate a playlist with OpenAI's GPT API based on a given theme."""
 
+import base64
+import io
 import os
 from typing import Any
 
 import fastapi
 import openai
+from PIL import Image
 
-from prompt import INITIAL_PROMPT
+from prompt import DALLE_PROMPT, INITIAL_PROMPT
 from theme_picker import get_random_city
 from utils import Playlist, extract_json_from_response, get_logger, spotify_client
 
@@ -34,6 +37,37 @@ def query_model_for_playlist(theme: str) -> str:
         temperature=0.8,
     )
     return completion.choices[0].message["content"]  # type: ignore
+
+
+@playlist_generator.get("/query_dalle_model")
+def create_cover_image(playlist_title: str) -> str:
+    """Generate a cover image for the playlist with OpenAI's DALL-E API.
+
+    Args:
+        playlist_title (str): The title of the playlist.
+
+    Returns:
+        str: The base64 encoded image.
+    """
+    logger.info(f"Creating cover image for playlist titled '{playlist_title}'.")
+    image = openai.Image.create(
+        prompt=DALLE_PROMPT.replace("{playlist_title}", playlist_title),
+        n=1,
+        size="256x256",
+        response_format="b64_json",
+    )
+
+    # Decode the base64 image data and open the image
+    bytes_obj = base64.b64decode(image.data[0].b64_json)
+    image = Image.open(io.BytesIO(bytes_obj))
+
+    # Resize the image and decrease quality to fit the maximum payload size that Spotify allows (256kb)
+    image = image.resize((800, 800))
+    image_data = io.BytesIO()
+    image.save(image_data, format="JPEG", quality=75)
+    image_b64 = base64.b64encode(image_data.getvalue()).decode("utf-8")
+
+    return image_b64
 
 
 def map_tracks_to_spotify_ids(tracks: dict) -> dict:
@@ -77,12 +111,16 @@ def compose_playlist(theme: str) -> Any:
     logger.info(f"Received response from GPT model: '{gpt_response}'")
     playlist_json = extract_json_from_response(gpt_response)
 
-    assert isinstance(playlist_json, dict)
-    assert all(key in playlist_json.keys() for key in ["tracks", "title", "description"])
+    assert isinstance(playlist_json, dict), "Expected playlist_json to be a dict."
+    assert all(
+        key in playlist_json.keys() for key in ["tracks", "title", "description"]
+    ), "Expected playlist_json to have keys 'tracks', 'title' and 'description'."
     logger.info(f"Extracted playlist with {len(playlist_json['tracks'].keys())} tracks from GPT response.")
+
+    playlist_json["cover_image"] = create_cover_image(playlist_json["title"])
 
     track_ids = map_tracks_to_spotify_ids(playlist_json["tracks"])
     playlist_json["tracks"] = list(track_ids.values())
-    logger.info(playlist_json)
+
     playlist = Playlist(**playlist_json)
     return playlist
