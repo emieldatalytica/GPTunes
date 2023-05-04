@@ -74,6 +74,7 @@ def compose_playlist(theme: str) -> Any:
         theme = get_random_city()
     logger.info(f"Given theme: '{theme}'")
     gpt_response = query_model_for_playlist(theme)
+    logger.info(f"Received response from GPT model: '{gpt_response}'")
     playlist_json = extract_json_from_response(gpt_response)
 
     assert isinstance(playlist_json, dict)
