@@ -13,7 +13,7 @@ logger = get_logger(__name__)
 
 @main.post("/create_themed_playlist")
 def create_themed_playlist(theme: str) -> str:
-    """Create a themed playlist on a weekly basis.
+    """Create a themed playlist and publish it to Spotify.
 
     Returns:
         str: A message informing the user that the playlist has been successfully updated.
