@@ -36,10 +36,17 @@ def publish_playlist_to_spotify(playlist: Playlist) -> str:
     )
 
     # upload the cover image
-    spotify_client.spotify.playlist_upload_cover_image(playlist_id=new_playlist["id"], image_b64=playlist.cover_image)
+    try:
+        spotify_client.spotify.playlist_upload_cover_image(
+            playlist_id=new_playlist["id"], image_b64=playlist.cover_image
+        )
+    except Exception as e:
+        logger.error(f"Could not upload cover image: {e}")
 
-    user_message = f"""A new playlist {playlist.title} has been created!
-            Check it out here: {new_playlist['external_urls']['spotify']}"""
+    user_message = (
+        f"A new playlist {playlist.title} has been created! "
+        f"Check it out here: {new_playlist['external_urls']['spotify']}"
+    )
 
     logger.info(user_message)
     return user_message

@@ -7,6 +7,7 @@ from typing import Any
 
 import fastapi
 import openai
+from fastapi import HTTPException
 from PIL import Image
 
 from prompt import DALLE_PROMPT, INITIAL_PROMPT
@@ -111,10 +112,18 @@ def compose_playlist(theme: str) -> Any:
     logger.info(f"Received response from GPT model: '{gpt_response}'")
     playlist_json = extract_json_from_response(gpt_response)
 
-    assert isinstance(playlist_json, dict), "Expected playlist_json to be a dict."
-    assert all(
-        key in playlist_json.keys() for key in ["tracks", "title", "description"]
-    ), "Expected playlist_json to have keys 'tracks', 'title' and 'description'."
+    if not isinstance(playlist_json, dict):
+        raise HTTPException(
+            status_code=500,
+            detail="The GPT response could not be processed into a structured dictionary. "
+            "Maybe try again with a different theme?",
+        )
+    if not all(key in playlist_json.keys() for key in ["tracks", "title", "description"]):
+        raise HTTPException(
+            status_code=500,
+            detail="The GPT response does not have keys 'tracks', 'title' and 'description'. "
+            "Maybe try again with a different theme?",
+        )
     logger.info(f"Extracted playlist with {len(playlist_json['tracks'].keys())} tracks from GPT response.")
 
     playlist_json["cover_image"] = create_cover_image(playlist_json["title"])
