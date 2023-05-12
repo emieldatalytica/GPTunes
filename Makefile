@@ -10,13 +10,18 @@ ci:
 	python -m flake8 src --max-line-length=120
 
 # Build and run the Docker container locally
-IMAGE_NAME = gptunes
-
+IMAGE_NAME = gptunes_dev
 container:
 	hadolint --version
 	hadolint Dockerfile
 	docker build -t $(IMAGE_NAME) .
-	docker run -p 8080:8080 $(IMAGE_NAME)
+	docker run -p 8080:8080 \
+		-v /Users/emieldeheij/Documents/GPTunes/envs/dev:/ops \
+		-e GOOGLE_APPLICATION_CREDENTIALS=/ops/gptunes-dev-27118a274ad3.json \
+		-e GPTUNES_DEV_ENV_ID=$(GPTUNES_DEV_ENV_ID) \
+		-e OPENAI_API_KEY=$(OPENAI_API_KEY) \
+		$(IMAGE_NAME)
+
 
 # Compile and install updated dependencies
 dependencies:
