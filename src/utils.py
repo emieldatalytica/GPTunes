@@ -72,6 +72,8 @@ class SpotifyClient:
             self.env_id = str(os.getenv("GPTUNES_MAIN_ENV_ID"))
         else:
             raise ValueError("env must be either 'dev' or 'main'")
+        if not self.env_id:
+            raise ValueError("env_id must be set. Are environment variables set correctly?")
         cid = self.access_secret_version(self.env_id, "SPOTIFY_CLIENT_ID")
         secret = self.access_secret_version(self.env_id, "SPOTIFY_CLIENT_SECRET")
         redirect_uri = self.access_secret_version(self.env_id, "SPOTIFY_REDIRECT_URI")

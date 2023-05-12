@@ -15,6 +15,8 @@ from theme_picker import get_random_city
 from utils import Playlist, extract_json_from_response, get_logger, spotify_client
 
 openai.api_key = os.getenv("OPENAI_API_KEY")
+if not openai.api_key:
+    raise KeyError("OPENAI_API_KEY environment variable not set.")
 
 playlist_generator = fastapi.FastAPI()
 logger = get_logger(__name__)
