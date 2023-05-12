@@ -10,11 +10,13 @@ ci:
 	python -m flake8 src --max-line-length=120
 
 # Build and run the Docker container locally
+IMAGE_NAME = gptunes
+
 container:
 	hadolint --version
-	hadolint src/Dockerfile
-	docker build -t playlist_generator src
-	docker run -p 8080:8080 playlist_generator
+	hadolint Dockerfile
+	docker build -t $(IMAGE_NAME) .
+	docker run -p 8080:8080 $(IMAGE_NAME)
 
 # Compile and install updated dependencies
 dependencies:
