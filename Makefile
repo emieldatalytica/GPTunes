@@ -8,6 +8,8 @@ ci:
 	python -m black src
 	python -m flake8 --version
 	python -m flake8 src --max-line-length=120
+	python -m mypy --version
+	python -m mypy src
 
 # Build and run the Docker container locally
 IMAGE_NAME = gptunes_dev

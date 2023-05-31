@@ -8,6 +8,7 @@ from typing import Any
 import fastapi
 import openai
 from fastapi import HTTPException
+from openai.error import RateLimitError
 from PIL import Image
 
 from prompt import DALLE_PROMPT, INITIAL_PROMPT
@@ -31,13 +32,16 @@ def query_model_for_playlist(theme: str) -> str:
     Returns:
         str: The model response in json-format.
     """
-    completion = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",
-        messages=[
-            {"role": "user", "content": INITIAL_PROMPT.replace("{theme}", theme)},
-        ],
-        temperature=0.8,
-    )
+    try:
+        completion = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo",
+            messages=[
+                {"role": "user", "content": INITIAL_PROMPT.replace("{theme}", theme)},
+            ],
+            temperature=0.8,
+        )
+    except RateLimitError:
+        raise HTTPException(status_code=429, detail="OpenAI API is currently overloaded.")
     return completion.choices[0].message["content"]  # type: ignore
 
 

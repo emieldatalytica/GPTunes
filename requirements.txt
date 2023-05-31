@@ -170,6 +170,10 @@ tenacity==8.2.2
     # via plotly
 tqdm==4.65.0
     # via openai
+types-requests==2.31.0.1
+    # via GPTunes (setup.cfg)
+types-urllib3==1.26.25.13
+    # via types-requests
 typing-extensions==4.5.0
     # via
     #   pydantic

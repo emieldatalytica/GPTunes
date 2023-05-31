@@ -43,10 +43,4 @@ def publish_playlist_to_spotify(playlist: Playlist) -> str:
     except Exception as e:
         logger.error(f"Could not upload cover image: {e}")
 
-    user_message = (
-        f"A new playlist {playlist.title} has been created! "
-        f"Check it out here: {new_playlist['external_urls']['spotify']}"
-    )
-
-    logger.info(user_message)
-    return user_message
+    return new_playlist["external_urls"]["spotify"]
