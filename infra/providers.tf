@@ -1,8 +1,6 @@
 terraform {
   required_version = ">= 1.4"
-}
 
-terraform {
   required_providers {
     google = {
       source  = "hashicorp/google"
@@ -10,6 +8,7 @@ terraform {
     }
   }
 }
+
 
 provider "google" {
   project = var.gcp_project

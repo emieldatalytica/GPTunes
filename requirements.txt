@@ -16,6 +16,8 @@ async-timeout==4.0.2
     #   redis
 attrs==23.1.0
     # via aiohttp
+blinker==1.6.2
+    # via flask
 cachetools==5.3.0
     # via google-auth
 certifi==2022.12.7
@@ -25,13 +27,29 @@ charset-normalizer==3.1.0
     #   aiohttp
     #   requests
 click==8.1.3
-    # via uvicorn
-dirtyjson==1.0.8
+    # via
+    #   flask
+    #   uvicorn
+dash==2.9.3
+    # via
+    #   GPTunes (setup.cfg)
+    #   dash-bootstrap-components
+dash-bootstrap-components==1.4.1
     # via GPTunes (setup.cfg)
-faker==18.6.2
+dash-core-components==2.0.0
+    # via dash
+dash-html-components==2.0.0
+    # via
+    #   GPTunes (setup.cfg)
+    #   dash
+dash-table==5.0.0
+    # via dash
+dirtyjson==1.0.8
     # via GPTunes (setup.cfg)
 fastapi==0.95.1
     # via GPTunes (setup.cfg)
+flask==2.3.2
+    # via dash
 frozenlist==1.3.3
     # via
     #   aiohttp
@@ -78,6 +96,16 @@ idna==3.4
     #   anyio
     #   requests
     #   yarl
+importlib-metadata==6.6.0
+    # via flask
+itsdangerous==2.1.2
+    # via flask
+jinja2==3.1.2
+    # via flask
+markupsafe==2.1.2
+    # via
+    #   jinja2
+    #   werkzeug
 multidict==6.0.4
     # via
     #   aiohttp
@@ -86,10 +114,14 @@ numpy==1.24.2
     # via pandas
 openai==0.27.4
     # via GPTunes (setup.cfg)
+packaging==23.1
+    # via plotly
 pandas==2.0.0
     # via GPTunes (setup.cfg)
 pillow==9.5.0
     # via GPTunes (setup.cfg)
+plotly==5.14.1
+    # via dash
 proto-plus==1.22.2
     # via google-cloud-secret-manager
 protobuf==4.22.3
@@ -109,9 +141,7 @@ pyasn1-modules==0.2.8
 pydantic==1.10.7
     # via fastapi
 python-dateutil==2.8.2
-    # via
-    #   faker
-    #   pandas
+    # via pandas
 pytz==2023.3
     # via pandas
 redis==4.5.4
@@ -136,6 +166,8 @@ spotipy==2.23.0
     # via GPTunes (setup.cfg)
 starlette==0.26.1
     # via fastapi
+tenacity==8.2.2
+    # via plotly
 tqdm==4.65.0
     # via openai
 typing-extensions==4.5.0
@@ -150,5 +182,9 @@ urllib3==1.26.15
     #   spotipy
 uvicorn==0.21.1
     # via GPTunes (setup.cfg)
+werkzeug==2.3.4
+    # via flask
 yarl==1.8.2
     # via aiohttp
+zipp==3.15.0
+    # via importlib-metadata

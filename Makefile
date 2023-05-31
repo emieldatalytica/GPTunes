@@ -16,7 +16,7 @@ container:
 	hadolint Dockerfile
 	docker build -t $(IMAGE_NAME) .
 	docker run -p 8080:8080 \
-		-v /Users/emieldeheij/Documents/GPTunes/envs/dev:/ops \
+		-v /Users/emieldeheij/Documents/GPTunes/infra/envs/dev:/ops \
 		-e GOOGLE_APPLICATION_CREDENTIALS=/ops/gptunes-dev-27118a274ad3.json \
 		-e GPTUNES_DEV_ENV_ID=$(GPTUNES_DEV_ENV_ID) \
 		-e OPENAI_API_KEY=$(OPENAI_API_KEY) \
@@ -30,8 +30,10 @@ dependencies:
 
 # Build GCP infrastructure with Terraform
 infra:
-	terraform fmt
-	terraform init
-	terraform validate
-	terraform plan -out tfplan -var-file=envs/dev/config.tfvars
-	terraform apply tfplan
+	cd infra && \
+		terraform fmt && \
+		tflint && \
+		terraform init && \
+		terraform validate && \
+		terraform plan -out tfplan -var-file=envs/dev/config.tfvars && \
+		terraform apply tfplan

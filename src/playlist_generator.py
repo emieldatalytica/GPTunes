@@ -11,7 +11,6 @@ from fastapi import HTTPException
 from PIL import Image
 
 from prompt import DALLE_PROMPT, INITIAL_PROMPT
-from theme_picker import get_random_city
 from utils import Playlist, extract_json_from_response, get_logger, spotify_client
 
 openai.api_key = os.getenv("OPENAI_API_KEY")
@@ -103,12 +102,10 @@ def compose_playlist(theme: str) -> Any:
     """Compose a playlist for a given theme.
 
     Args:
-        theme (str): The theme of the playlist. If empty, a random theme is picked.
+        theme (str): The theme of the playlist.
     Returns:
         Playlist: The composed playlist with tracks, title and description.
     """
-    if not theme:
-        theme = get_random_city()
     logger.info(f"Given theme: '{theme}'")
     gpt_response = query_model_for_playlist(theme)
     logger.info(f"Received response from GPT model: '{gpt_response}'")
