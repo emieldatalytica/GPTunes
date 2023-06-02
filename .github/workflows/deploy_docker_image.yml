@@ -1,4 +1,4 @@
-name: Build and Push Docker Image
+name: Docker Image Release
 
 on:
   push:
@@ -7,39 +7,39 @@ on:
 
 env:
   PROJECT_ID: gptunes-dev
+  REPO_NAME: gptunes-backend
   IMAGE_NAME: gptunes-backend
+  REGION: europe-west4
 
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
 
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Configure Google Cloud SDK
-        uses: google-github-actions/setup-gcloud@v0.5.0
+      - id: 'auth'
+        uses: 'google-github-actions/auth@v1'
         with:
-          project_id: ${{ env.PROJECT_ID }}
-          service_account_key: ${{ secrets.GCP_SA_KEY }}
-          export_default_credentials: true
+          credentials_json: '${{ secrets.GCP_SA_KEY }}'
 
-      - name: Configure Docker
-        uses: docker/setup-buildx-action@v1
+      - name: 'Set up Cloud SDK'
+        uses: 'google-github-actions/setup-gcloud@v1'
 
-      - name: Build and push Docker image
-        run: |
-          docker build -t gcr.io/$PROJECT_ID/$IMAGE_NAME .
-          docker push gcr.io/$PROJECT_ID/$IMAGE_NAME
+      - name: 'Use gcloud CLI'
+        run: 'gcloud info'
 
-      - name: Configure gcloud
-        run: gcloud config set project ${{ env.PROJECT_ID }}
-
-      - name: Configure Docker credential helper for Artifact Registry
-        run: gcloud auth configure-docker gcr.io
-
-      - name: Tag Docker image for Artifact Registry
-        run: docker tag gcr.io/$PROJECT_ID/$IMAGE_NAME gcr.io/$PROJECT_ID/$IMAGE_NAME:${{ github.sha }}
-
-      - name: Push Docker image to Artifact Registry
-        run: docker push gcr.io/$PROJECT_ID/$IMAGE_NAME:${{ github.sha }}
+      - id: docker-push-tagged
+        name: Tag Docker image and push to Google Artifact Registry
+        uses: docker/build-push-action@v2
+        with:
+          push: true
+          file: ./Dockerfile
+          tags: |
+             $REGION-docker.pkg.dev/$PROJECT_ID/$REPO_NAME/$IMAGE_NAME:${{ github.sha }}
+             $REGION-docker.pkg.dev/$PROJECT_ID/$REPO_NAME/$IMAGE_NAME:latest
