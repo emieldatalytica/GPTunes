@@ -34,13 +34,6 @@ jobs:
       - name: 'Use gcloud CLI'
         run: 'gcloud info'
 
-      - name: Configure Docker CLI
-        uses: docker/login-action@v1
-        with:
-          registry: $REGION-docker.pkg.dev
-          username: _json_key
-          password: ${{ secrets.GCP_SA_KEY }}
-
       - name: Build and push Docker image
         uses: docker/build-push-action@v4
         with:
@@ -48,5 +41,5 @@ jobs:
           push: true
           file: ./Dockerfile
           tags: |
-            $REGION-docker.pkg.dev/$PROJECT_ID/$REPO_NAME/$IMAGE_NAME:${{ github.sha }}
-            $REGION-docker.pkg.dev/$PROJECT_ID/$REPO_NAME/$IMAGE_NAME:latest
+            europe-west4-docker.pkg.dev/gptunes-dev/gptunes-backend/gptunes-backend:${{ github.sha }}
+            europe-west4-docker.pkg.dev/gptunes-dev/gptunes-backend/gptunes-backend:latest
