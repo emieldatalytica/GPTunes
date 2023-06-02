@@ -40,8 +40,6 @@ jobs:
       #   registry: ${{ secrets.REGISTRY_URL }}
       #   username: _json_key
       #   password: ${{ secrets.GCP_SA_KEY }}
-      - name: echo
-        run: echo "$REGION-docker.pkg.dev/$PROJECT_ID/$REPO_NAME/$IMAGE_NAME:${{ github.sha }}"
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v4
@@ -49,4 +47,5 @@ jobs:
           context: .
           push: true
           file: ./Dockerfile
-          tags: $REGION-docker.pkg.dev/$PROJECT_ID/$REPO_NAME/$IMAGE_NAME:${{ github.sha }},$REGION-docker.pkg.dev/$PROJECT_ID/$REPO_NAME/$IMAGE_NAME:latest
+          tags: $REGION-docker.pkg.dev/$PROJECT_ID/$REPO_NAME/$IMAGE_NAME:latest
+          # $REGION-docker.pkg.dev/$PROJECT_ID/$REPO_NAME/$IMAGE_NAME:${{ github.sha }},
