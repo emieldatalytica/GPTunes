@@ -1,4 +1,4 @@
-name: Docker Image Release
+name: Push Docker image to GCP Artifact Registry
 
 on:
   push:
@@ -23,23 +23,40 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - id: 'auth'
-        uses: 'google-github-actions/auth@v1'
+      # - name: Configure Docker CLI
+      # uses: docker/login-action@v1
+      # with:
+      #   registry: ${{ secrets.REGISTRY_URL }}
+      #   username: _json_key
+      #   password: ${{ secrets.GCP_SA_KEY }}
+      - name: echo
+        run: echo "$REGION-docker.pkg.dev/$PROJECT_ID/$REPO_NAME/$IMAGE_NAME:${{ github.sha }}"
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v4
         with:
-          credentials_json: '${{ secrets.GCP_SA_KEY }}'
-
-      - name: 'Set up Cloud SDK'
-        uses: 'google-github-actions/setup-gcloud@v1'
-
-      - name: 'Use gcloud CLI'
-        run: 'gcloud info'
-
-      - id: docker-push-tagged
-        name: Tag Docker image and push to Google Artifact Registry
-        uses: docker/build-push-action@v2
-        with:
+          context: .
           push: true
           file: ./Dockerfile
-          tags: |
-             $REGION-docker.pkg.dev/$PROJECT_ID/$REPO_NAME/$IMAGE_NAME:${{ github.sha }}
-             $REGION-docker.pkg.dev/$PROJECT_ID/$REPO_NAME/$IMAGE_NAME:latest
+          tags: ${{ secrets.REGISTRY_URL }}/${{ secrets.PROJECT_ID }}/${{ secrets.REPO_NAME }}/${{ secrets.IMAGE_NAME }}:${{ github.sha }},$REGISTRY_URL}/${{ secrets.PROJECT_ID }}/${{ secrets.REPO_NAME }}/${{ secrets.IMAGE_NAME }}:latest
+          # europe-west4-docker.pkg.dev/gptunes-dev/gptunes-backend
+      # - id: 'auth'
+      #   uses: 'google-github-actions/auth@v1'
+      #   with:
+      #     credentials_json: '${{ secrets.GCP_SA_KEY }}'
+
+      # - name: 'Set up Cloud SDK'
+      #   uses: 'google-github-actions/setup-gcloud@v1'
+
+      # - name: 'Use gcloud CLI'
+      #   run: 'gcloud info'
+
+      # - id: docker-push-tagged
+      #   name: Tag Docker image and push to Google Artifact Registry
+      #   uses: docker/build-push-action@v4
+      #   with:
+      #     push: true
+      #     file: ./Dockerfile
+      #     tags: |
+      #        $REGION-docker.pkg.dev/$PROJECT_ID/$REPO_NAME/$IMAGE_NAME:${{ github.sha }}
+      #        $REGION-docker.pkg.dev/$PROJECT_ID/$REPO_NAME/$IMAGE_NAME:latest
