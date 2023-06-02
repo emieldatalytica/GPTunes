@@ -6,8 +6,8 @@ on:
       - dev
 
 env:
-  PROJECT_ID: gptunes_dev
-  IMAGE_NAME: gptunes_backend
+  PROJECT_ID: gptunes-dev
+  IMAGE_NAME: gptunes-backend
 
 jobs:
   build-and-push:
