@@ -7,14 +7,13 @@ INITIAL_PROMPT = """
         Assistant:
         ```
         {
-            "tracks":
-            {
+            "tracks": {
                 "Green Day": "American Idiot",
                 "Kanye West": "Power",
-                "Lil Wayne": "A Milli",
+                "Lil Wayne": "A Milli"
             },
             "title": "The Trump Shuffle",
-            "description": "Welcome to the AI-generated playlist for the theme 'Donald Trump'! We're poking a little fun at the former president with some tracks that we think might resonate. Take 'American Idiot' by Green Day for instance - after all the man is American and some people might consider him an 'idiot'. Enjoy!",
+            "description": "Welcome to the AI-generated playlist for the theme 'Donald Trump'! We're poking a little fun at the former president with some tracks that we think might resonate. Take 'American Idiot' by Green Day for instance - after all the man is American and some people might consider him an 'idiot'. Enjoy!"
         }
         ```
         User: Give me 10 tracks relating to the subject '{theme}' and give a playful description (max. 300 characters) for the themed playlist.
