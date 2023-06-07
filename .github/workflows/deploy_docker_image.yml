@@ -4,9 +4,9 @@ on:
   push:
     branches:
       - dev
+      - main
 
 env:
-  PROJECT_ID: gptunes-dev
   REPO_NAME: gptunes-backend
   IMAGE_NAME: gptunes-backend
   REGION: europe-west4
@@ -14,11 +14,9 @@ env:
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
-
     permissions:
       contents: 'read'
       id-token: 'write'
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -37,6 +35,17 @@ jobs:
       - name: Configure Docker
         run: gcloud auth configure-docker europe-west4-docker.pkg.dev
 
+      - name: Set ENV_ID and PROJECT_ID based on branch
+        id: set_vars
+        run: |
+          if [ "${{ github.ref }}" = "refs/heads/main" ]; then
+            echo "::set-output name=env_id::${{ secrets.PROD_ENV_ID }}"
+            echo "::set-output name=project_id::gptunes"
+          else
+            echo "::set-output name=env_id::${{ secrets.DEV_ENV_ID }}"
+            echo "::set-output name=project_id::gptunes-dev"
+          fi
+
       - name: Build and push Docker image
         uses: docker/build-push-action@v4
         with:
@@ -44,5 +53,7 @@ jobs:
           push: true
           file: ./Dockerfile
           tags: |
-            europe-west4-docker.pkg.dev/gptunes-dev/gptunes-backend/gptunes-backend:${{ github.sha }}
-            europe-west4-docker.pkg.dev/gptunes-dev/gptunes-backend/gptunes-backend:latest
+            europe-west4-docker.pkg.dev/${{ steps.set_vars.outputs.project_id }}/gptunes-backend/gptunes-backend:${{ github.sha }}
+            europe-west4-docker.pkg.dev/${{ steps.set_vars.outputs.project_id }}/gptunes-backend/gptunes-backend:latest
+          build-args:
+          ENV_ID: ${{ steps.set_vars.outputs.env_id }}

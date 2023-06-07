@@ -1,10 +1,25 @@
-- name: Setup Terraform
-  uses: hashicorp/setup-terraform@v1
+name: Set up GCP infrastructure with Terraform
 
-- name: Terraform Init
-  run: terraform init
+on:
+  push:
+    branches:
+      - dev
+      - main
 
-- name: Terraform Apply
-  run: terraform apply -auto-approve
-  env:
-    TF_VAR_image_tag: ${{ github.sha }}
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v1
+
+      - name: Terraform Init
+        run: terraform init
+
+      - name: Terraform Apply
+        run: terraform apply -auto-approve
+        env:
+          TF_VAR_image_tag: ${{ github.sha }}
