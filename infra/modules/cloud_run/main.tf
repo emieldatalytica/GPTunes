@@ -5,7 +5,7 @@ resource "google_cloud_run_service" "default" {
   template {
     spec {
       containers {
-        image = "europe-west4-docker.pkg.dev/gptunes-dev/gptunes-backend/gptunes-backend"
+        image = "europe-west4-docker.pkg.dev/gptunes-dev/gptunes-backend/gptunes-backend:${var.image_tag}"
       }
     }
   }

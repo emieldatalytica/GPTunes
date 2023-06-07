@@ -1,0 +1,10 @@
+- name: Setup Terraform
+  uses: hashicorp/setup-terraform@v1
+
+- name: Terraform Init
+  run: terraform init
+
+- name: Terraform Apply
+  run: terraform apply -auto-approve
+  env:
+    TF_VAR_image_tag: ${{ github.sha }}

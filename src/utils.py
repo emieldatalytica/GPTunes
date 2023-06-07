@@ -54,26 +54,17 @@ def extract_json_from_response(response: str) -> dict:
 
 
 class SpotifyClient:
-    """Class that instantiates a Spotify client to interact with the API."""
+    """Class that instantiates a Spotify client to interact with the Spotify API."""
 
-    def __init__(self, env: str = "dev") -> None:
+    def __init__(self) -> None:
         """Initialize the Spotify client.
 
-        Args:
-            env (str, optional): The environment to use. Defaults to "dev".
-
         Raises:
-            ValueError: If env is not "dev" or "main".
+            ValueError: If the environment variables are not set.
         """
-        # TO-DO: add support for main environment
-        if env == "dev":
-            self.env_id = str(os.getenv("GPTUNES_DEV_ENV_ID"))
-        elif env == "main":
-            self.env_id = str(os.getenv("GPTUNES_MAIN_ENV_ID"))
-        else:
-            raise ValueError("env must be either 'dev' or 'main'")
-        if not self.env_id:
-            raise ValueError("env_id must be set. Are environment variables set correctly?")
+        self.env_id = str(os.getenv("ENV_ID"))
+        if self.env_id == "None":
+            raise ValueError("env_id must be set. Are environment variables set and loaded correctly?")
         cid = self.access_secret_version(self.env_id, "SPOTIFY_CLIENT_ID")
         secret = self.access_secret_version(self.env_id, "SPOTIFY_CLIENT_SECRET")
         redirect_uri = self.access_secret_version(self.env_id, "SPOTIFY_REDIRECT_URI")
