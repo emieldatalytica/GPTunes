@@ -4,7 +4,6 @@ resource "google_cloud_run_v2_service" "default" {
   ingress = "INGRESS_TRAFFIC_ALL"
 
   template {
-    spec {
       containers {
         name = "gptunes-backend"
         ports {
@@ -12,11 +11,9 @@ resource "google_cloud_run_v2_service" "default" {
         }
         image = "europe-west4-docker.pkg.dev/gptunes-dev/gptunes-backend/gptunes-backend:${var.image_tag}"
       }
-    }
   }
 
   traffic {
     percent         = 100
-    latest_revision = true
   }
 }
