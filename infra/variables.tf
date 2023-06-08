@@ -19,5 +19,5 @@ variable "gcp_service_account" {
 variable "image_tag" {
   description = "Image tag"
   type        = string
-  default     = ""
+  default     = "latest"
 }
