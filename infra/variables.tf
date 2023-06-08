@@ -15,3 +15,9 @@ variable "gcp_service_account" {
   type        = string
   default     = ""
 }
+
+variable "image_tag" {
+  description = "Image tag"
+  type        = string
+  default     = ""
+}
