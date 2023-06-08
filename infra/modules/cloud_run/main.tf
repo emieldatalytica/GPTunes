@@ -12,8 +12,4 @@ resource "google_cloud_run_v2_service" "default" {
         image = "europe-west4-docker.pkg.dev/gptunes-dev/gptunes-backend/gptunes-backend:${var.image_tag}"
       }
   }
-
-  traffic {
-    percent         = 100
-  }
 }
