@@ -1,3 +1,11 @@
+resource "google_cloud_run_v2_service_iam_member" "member" {
+  project = google_cloud_run_v2_service.default.project
+  location = google_cloud_run_v2_service.default.location
+  name = google_cloud_run_v2_service.default.name
+  role = "roles/run.admin"
+  member = "serviceAccount:${var.gcp_service_account}"
+}
+
 resource "google_cloud_run_v2_service" "default" {
   name     = "gptunes-api"
   location = "europe-west4"

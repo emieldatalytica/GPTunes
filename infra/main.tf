@@ -5,5 +5,6 @@ module "artifact_registry" {
 
 module "cloud_run" {
   source    = "./modules/cloud_run"
+  gcp_service_account = var.gcp_service_account
   image_tag = var.image_tag
 }
