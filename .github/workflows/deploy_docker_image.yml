@@ -55,6 +55,7 @@ jobs:
           file: ./Dockerfile
           tags: |
               europe-west4-docker.pkg.dev/${{ env.project_id }}/gptunes-backend/gptunes-backend:${{ github.sha }}
+              europe-west4-docker.pkg.dev/${{ env.project_id }}/gptunes-backend/gptunes-backend:latest
           build-args: |
               ENV_ID=${{ env.env_id }}
 
