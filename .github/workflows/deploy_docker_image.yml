@@ -1,4 +1,4 @@
-name: Push Docker image to GCP Artifact Registry
+name: Build Docker image and set up GCP infrastructure
 
 on:
   push:
@@ -12,11 +12,12 @@ env:
   REGION: europe-west4
 
 jobs:
-  build-and-push:
+  build-and-setup:
     runs-on: ubuntu-latest
     permissions:
       contents: 'read'
       id-token: 'write'
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -46,7 +47,6 @@ jobs:
             echo "project_id=gptunes-dev" >> $GITHUB_ENV
           fi
 
-
       - name: Build and push Docker image
         uses: docker/build-push-action@v4
         with:
@@ -57,3 +57,22 @@ jobs:
               europe-west4-docker.pkg.dev/${{ env.project_id }}/gptunes-backend/gptunes-backend:${{ github.sha }}
           build-args: |
               ENV_ID=${{ env.env_id }}
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+
+      - name: Terraform Init
+        run: terraform init
+        working-directory: infra/
+
+      - name: Terraform Apply
+        run: |
+          if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
+            VAR_FILE="envs/main/config.tfvars"
+          else
+            VAR_FILE="envs/dev/config.tfvars"
+          fi
+          terraform apply -auto-approve -var-file="$VAR_FILE"
+        working-directory: infra/
+        env:
+          TF_VAR_image_tag: ${{ github.sha }}
