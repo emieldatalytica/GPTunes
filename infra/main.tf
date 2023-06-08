@@ -4,6 +4,6 @@ module "artifact_registry" {
 }
 
 module "cloud_run" {
-  source = "./modules/cloud_run"
+  source    = "./modules/cloud_run"
   image_tag = var.image_tag
 }

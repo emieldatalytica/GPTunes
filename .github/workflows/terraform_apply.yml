@@ -29,7 +29,13 @@ jobs:
         working-directory: infra/
 
       - name: Terraform Apply
-        run: terraform apply -auto-approve
+        run: |
+          if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
+            VAR_FILE="envs/main/config.tfvars"
+          else
+            VAR_FILE="envs/dev/config.tfvars"
+          fi
+          terraform apply -auto-approve -var-file="$VAR_FILE"
         working-directory: infra/
         env:
           TF_VAR_image_tag: ${{ github.sha }}
