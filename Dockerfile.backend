@@ -1,4 +1,3 @@
-# Docker image to run the FastAPI app from playlist_generator.py
 FROM python:3.9-slim-buster
 
 WORKDIR /app
