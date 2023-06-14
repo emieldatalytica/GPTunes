@@ -13,6 +13,6 @@ resource "google_artifact_registry_repository" "backend_image_repo" {
   format        = "DOCKER"
 
   docker_config {
-    immutable_tags = true
+    immutable_tags = false
   }
 }
