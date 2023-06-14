@@ -10,6 +10,12 @@ resource "google_project_iam_member" "gptunes_sa_secrets_accessor" {
   member  = "serviceAccount:${google_service_account.gptunes_sa.email}"
 }
 
+resource "google_project_iam_member" "cloudrun_invoker" {
+  project = var.gcp_project
+  role    = "roles/run.invoker"
+  member  = "serviceAccount:${google_service_account.gptunes_sa.email}"
+}
+
 resource "google_cloud_run_v2_service" "default" {
   name     = "gptunes-api"
   location = "europe-west4"

@@ -1,6 +1,7 @@
 """This is the main module to generate a themed playlist on a weekly basis, piecing other modules together."""
 
 import fastapi
+from fastapi import HTTPException
 from fastapi.responses import RedirectResponse
 
 from playlist_generator import compose_playlist
@@ -24,7 +25,12 @@ def create_themed_playlist(theme: str) -> str:
     Returns:
         str: A message informing the user that the playlist has been successfully updated.
     """
-    playlist = compose_playlist(theme=theme)
-    logger.info(f"Sending playlist titled '{playlist.title}' to publisher-service.")
-    url = publish_playlist_to_spotify(playlist)
+    try:
+        playlist = compose_playlist(theme=theme)
+        logger.info(f"Sending playlist titled '{playlist.title}' to publisher-service.")
+        url = publish_playlist_to_spotify(playlist)
+    except Exception as e:
+        logger.error(f"Failed to create and publish playlist: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
     return url

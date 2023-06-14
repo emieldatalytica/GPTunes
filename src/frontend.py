@@ -37,7 +37,8 @@ def create_and_embed_playlist(
     n_clicks: Union[int, None], value: Union[str, None]
 ) -> Tuple[Union[dcc.Markdown, None], Union[html.Iframe, None]]:
     if n_clicks == 1 and value is not None:
-        post_url = "http://0.0.0.0:8080/create_themed_playlist"
+        # post_url = "http://0.0.0.0:8080/create_themed_playlist"  # local debugging
+        post_url = "https://gptunes-api-lduyxfnclq-ez.a.run.app/create_themed_playlist"
         response = requests.post(post_url, params={"theme": value})
         if response.status_code == 200:
             playlist_url = response.json()
@@ -56,11 +57,11 @@ def create_and_embed_playlist(
                 allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture",
             )
         else:
-            return (
-                "There was an error in creating the playlist. /n"
-                "Please make sure that your requested theme is allowed per OpenAI's guidelines.",
-                None,
+            error_message = (
+                f"There was an error in creating the playlist. Status code: {response.status_code}. "
+                f"Message: {response.text}"
             )
+            return error_message, None
 
     return None, None
 
