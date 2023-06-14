@@ -13,5 +13,7 @@ EXPOSE 8080
 
 ARG ENV_ID
 ENV ENV_ID=$ENV_ID
+ARG OPENAI_API_KEY
+ENV OPENAI_API_KEY=$OPENAI_API_KEY
 
 CMD ["uvicorn", "main:main", "--host", "0.0.0.0", "--port", "8080"]

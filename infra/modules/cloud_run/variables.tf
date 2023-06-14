@@ -1,6 +1,6 @@
-variable "gcp_service_account" {
-  description = "GCP service account"
-  type        = string
+variable "gcp_project" {
+    description = "GCP project"
+    type        = string
 }
 
 variable "image_tag" {

@@ -7,7 +7,7 @@ variable "gcp_region" {
 variable "gcp_project" {
   description = "GCP project"
   type        = string
-  default     = "gptunes-dev"
+  default     = ""
 }
 
 variable "gcp_service_account" {

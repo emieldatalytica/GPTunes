@@ -20,7 +20,7 @@ container:
 	docker run -p 8080:8080 \
 		-v /Users/emieldeheij/Documents/GPTunes/infra/envs/dev:/ops \
 		-e GOOGLE_APPLICATION_CREDENTIALS=/ops/gptunes-dev-27118a274ad3.json \
-		-e GPTUNES_DEV_ENV_ID=$(GPTUNES_DEV_ENV_ID) \
+		-e ENV_ID=$(ENV_ID) \
 		-e OPENAI_API_KEY=$(OPENAI_API_KEY) \
 		$(IMAGE_NAME)
 
