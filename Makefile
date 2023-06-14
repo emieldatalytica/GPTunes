@@ -1,7 +1,7 @@
 .PHONY: ci container dependencies infra
 
 # Load environment variables from the dev .env file
-include infra/envs/dev/.env
+-include infra/envs/dev/.env
 export
 
 # Format code using black and lint with flake8
@@ -16,14 +16,13 @@ ci:
 	python -m mypy src
 
 # Build and run the Docker container locally
-IMAGE_NAME = gptunes_dev
 container:
 	hadolint --version
 	hadolint Dockerfile
 	docker build -t $(IMAGE_NAME) .
 	docker run -p 8080:8080 \
 		-v /Users/emieldeheij/Documents/GPTunes/infra/envs/dev:/ops \
-		-e GOOGLE_APPLICATION_CREDENTIALS=/ops/$(SA_CREDENTIALS) \
+		-e GOOGLE_APPLICATION_CREDENTIALS=$(SA_CREDENTIALS) \
 		-e ENV_ID=$(ENV_ID) \
 		-e OPENAI_API_KEY=$(OPENAI_API_KEY) \
 		$(IMAGE_NAME)
