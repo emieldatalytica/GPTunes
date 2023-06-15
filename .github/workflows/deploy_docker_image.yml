@@ -6,11 +6,6 @@ on:
       - dev
       - main
 
-env:
-  REPO_NAME: gptunes-backend
-  IMAGE_NAME: gptunes-backend
-  REGION: europe-west4
-
 jobs:
   build-and-setup:
     runs-on: ubuntu-latest
@@ -49,7 +44,7 @@ jobs:
             echo "project_id=gptunes-dev" >> $GITHUB_ENV
           fi
 
-      - name: Build and push Docker image
+      - name: Build and push Docker image for backend
         uses: docker/build-push-action@v4
         with:
           context: .
@@ -61,6 +56,16 @@ jobs:
           build-args: |
               ENV_ID=${{ env.env_id }}
               OPENAI_API_KEY=${{ env.openai_api_key }}
+
+      - name: Build and push Docker image for frontend
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          push: true
+          file: ./Dockerfile.frontend
+          tags: |
+              europe-west4-docker.pkg.dev/${{ env.project_id }}/gptunes-frontend/gptunes-frontend:${{ github.sha }}
+              europe-west4-docker.pkg.dev/${{ env.project_id }}/gptunes-frontend/gptunes-frontend:latest
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2

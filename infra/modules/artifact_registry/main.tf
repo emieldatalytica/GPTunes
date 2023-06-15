@@ -16,3 +16,14 @@ resource "google_artifact_registry_repository" "backend_image_repo" {
     immutable_tags = false
   }
 }
+
+resource "google_artifact_registry_repository" "frontend_image_repo" {
+  location      = "europe-west4"
+  repository_id = "gptunes-frontend"
+  description   = "The GPTunes frontend API image repository"
+  format        = "DOCKER"
+
+  docker_config {
+    immutable_tags = false
+  }
+}
