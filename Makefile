@@ -50,3 +50,11 @@ infra:
 		terraform validate && \
 		terraform plan -out tfplan -var-file=envs/dev/config.tfvars && \
 		terraform apply tfplan
+
+encode_sa_keys_dev:
+	@base64 -i /Users/emieldeheij/Documents/GPTunes/infra/envs/dev/gptunes-dev-27118a274ad3.json | pbcopy
+	@echo "Copied service account key to clipboard."
+
+encode_sa_keys_prod:
+	@base64 -i /Users/emieldeheij/Documents/GPTunes/infra/envs/main/gptunes.json | pbcopy
+	@echo "Copied service account key to clipboard."

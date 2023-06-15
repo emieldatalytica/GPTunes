@@ -21,16 +21,19 @@ jobs:
         id: set_vars
         run: |
           if [ "${{ github.ref }}" = "refs/heads/main" ]; then
-            echo "GCP_SA_KEY=${{ secrets.PROD_GCP_SA_KEY }}" >> $GITHUB_ENV
+            echo "GCP_SA_KEY_BASE64=${{ secrets.PROD_GCP_SA_KEY_BASE64 }}" >> $GITHUB_ENV
             echo "env_id=${{ secrets.PROD_ENV_ID }}" >> $GITHUB_ENV
             echo "openai_api_key=${{ secrets.PROD_OPENAI_API_KEY }}" >> $GITHUB_ENV
             echo "project_id=gptunes" >> $GITHUB_ENV
           else
-            echo "GCP_SA_KEY=${{ secrets.DEV_GCP_SA_KEY }}" >> $GITHUB_ENV
+            echo "GCP_SA_KEY_BASE64=${{ secrets.DEV_GCP_SA_KEY_BASE64 }}" >> $GITHUB_ENV
             echo "env_id=${{ secrets.DEV_ENV_ID }}" >> $GITHUB_ENV
             echo "openai_api_key=${{ secrets.DEV_OPENAI_API_KEY }}" >> $GITHUB_ENV
             echo "project_id=gptunes-dev" >> $GITHUB_ENV
           fi
+
+      - name: Decode GCP_SA_KEY from base64
+        run: echo "GCP_SA_KEY=$(echo "$GCP_SA_KEY_BASE64" | base64 --decode)" >> $GITHUB_ENV
 
       - id: 'auth'
         uses: 'google-github-actions/auth@v1'
