@@ -33,7 +33,7 @@ jobs:
           fi
 
       - name: Decode GCP_SA_KEY from base64
-        run: echo "GCP_SA_KEY=$(echo "$GCP_SA_KEY_BASE64" | base64 --decode)" >> $GITHUB_ENV
+        run: printf "GCP_SA_KEY=$(echo "$GCP_SA_KEY_BASE64" | base64 --decode)" >> $GITHUB_ENV
 
       - id: 'auth'
         uses: 'google-github-actions/auth@v1'
