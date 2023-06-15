@@ -26,7 +26,7 @@ jobs:
             echo "openai_api_key=${{ secrets.PROD_OPENAI_API_KEY }}" >> $GITHUB_ENV
             echo "project_id=gptunes" >> $GITHUB_ENV
           else
-            echo "GCP_SA_KEY=${{ secrets.DEV_GCP_SA_KEY }}" >> $GITHUB_ENV
+            echo "GCP_SA_KEY=${{ secrets.GCP_SA_KEY }}" >> $GITHUB_ENV
             echo "env_id=${{ secrets.DEV_ENV_ID }}" >> $GITHUB_ENV
             echo "openai_api_key=${{ secrets.DEV_OPENAI_API_KEY }}" >> $GITHUB_ENV
             echo "project_id=gptunes-dev" >> $GITHUB_ENV
