@@ -35,6 +35,15 @@ jobs:
       - name: Decode GCP_SA_KEY from base64
         run: echo "GCP_SA_KEY=$(echo "$GCP_SA_KEY_BASE64" | base64 --decode)" >> $GITHUB_ENV
 
+      - name: Check if GCP_SA_KEY is set
+        run: |
+          if [ -z "$GCP_SA_KEY" ]
+          then
+            echo "\$GCP_SA_KEY is empty"
+          else
+            echo "\$GCP_SA_KEY is set and its length is ${#GCP_SA_KEY}"
+          fi
+
       - id: 'auth'
         uses: 'google-github-actions/auth@v1'
         with:
