@@ -1,0 +1,87 @@
+name: Build Docker image and set up GCP infrastructure
+
+on:
+  push:
+    branches:
+      - dev
+      - main
+
+jobs:
+  build-and-setup:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - id: 'auth'
+        uses: 'google-github-actions/auth@v1'
+        with:
+          credentials_json: ${{ (github.ref == 'refs/heads/main') && secrets.PROD_GCP_SA_KEY || secrets.DEV_GCP_SA_KEY }}
+
+      - name: 'Set up Cloud SDK'
+        uses: 'google-github-actions/setup-gcloud@v1'
+
+      - name: 'Use gcloud CLI'
+        run: 'gcloud info'
+
+      - name: Configure Docker
+        run: gcloud auth configure-docker europe-west4-docker.pkg.dev
+
+      - name: Set ENV_ID and PROJECT_ID based on branch
+        id: set_vars
+        run: |
+          if [ "${{ github.ref }}" = "refs/heads/main" ]; then
+            echo "env_id=${{ secrets.PROD_ENV_ID }}" >> $GITHUB_ENV
+            echo "openai_api_key=${{ secrets.PROD_OPENAI_API_KEY }}" >> $GITHUB_ENV
+            echo "project_id=gptunes" >> $GITHUB_ENV
+          else
+            echo "env_id=${{ secrets.DEV_ENV_ID }}" >> $GITHUB_ENV
+            echo "openai_api_key=${{ secrets.DEV_OPENAI_API_KEY }}" >> $GITHUB_ENV
+            echo "project_id=gptunes-dev" >> $GITHUB_ENV
+          fi
+
+      - name: Build and push Docker image for backend
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          push: true
+          file: ./Dockerfile.backend
+          tags: |
+              europe-west4-docker.pkg.dev/${{ env.project_id }}/gptunes-backend/gptunes-backend:${{ github.sha }}
+              europe-west4-docker.pkg.dev/${{ env.project_id }}/gptunes-backend/gptunes-backend:latest
+          build-args: |
+              ENV_ID=${{ env.env_id }}
+              OPENAI_API_KEY=${{ env.openai_api_key }}
+
+      - name: Build and push Docker image for frontend
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          push: true
+          file: ./Dockerfile.frontend
+          tags: |
+              europe-west4-docker.pkg.dev/${{ env.project_id }}/gptunes-frontend/gptunes-frontend:${{ github.sha }}
+              europe-west4-docker.pkg.dev/${{ env.project_id }}/gptunes-frontend/gptunes-frontend:latest
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+
+      - name: Terraform Init
+        run: terraform init
+        working-directory: infra/
+
+      - name: Terraform Apply
+        run: |
+          if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
+            VAR_FILE="envs/main/config.tfvars"
+          else
+            VAR_FILE="envs/dev/config.tfvars"
+          fi
+          terraform apply -auto-approve -var-file="$VAR_FILE"
+        working-directory: infra/
+        env:
+          TF_VAR_image_tag: ${{ github.sha }}

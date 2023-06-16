@@ -1,0 +1,52 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap');
+
+body {
+    margin: 0;
+}
+
+.container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background-image: url('/assets/wes_anderson_style_music_studio.png');
+    background-size: cover;
+}
+
+.content {
+    text-align: center;
+    background-color: rgba(255, 255, 255, 0.7);
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.title {
+    font-size: 36px;
+    font-family: 'Roboto', sans-serif;
+}
+
+.input {
+    margin-bottom: 10px;
+    font-family: 'Roboto', sans-serif;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.button {
+    margin-bottom: 10px;
+    font-family: 'Roboto', sans-serif;
+    padding: 10px 20px;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    border-radius: 5px;
+}
+
+.output {
+    font-size: 18px;
+    font-family: 'Roboto', sans-serif;
+    padding: 10px;
+    border: 1px solid #dddddd00;
+    border-radius: 5px;
+}
