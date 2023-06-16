@@ -21,15 +21,16 @@ jobs:
         id: set_sa_key
         run: |
           if [ "${{ github.ref }}" = "refs/heads/main" ]; then
-            echo "GCP_SA_KEY=${{ secrets.PROD_GCP_SA_KEY }}" >> $GITHUB_ENV
+            echo "GCP_SA_KEY=$(echo ${{ secrets.PROD_GCP_SA_KEY }} | base64)" >> $GITHUB_ENV
           else
-            echo "GCP_SA_KEY=${{ secrets.DEV_GCP_SA_KEY }}" >> $GITHUB_ENV
+            echo "GCP_SA_KEY=$(echo ${{ secrets.DEV_GCP_SA_KEY }} | base64)" >> $GITHUB_ENV
           fi
 
       - id: 'auth'
         uses: 'google-github-actions/auth@v1'
         with:
-          credentials_json: '${{ env.GCP_SA_KEY }}'
+          credentials_json: '${{ secrets: (env.GCP_SA_KEY | base64 --decode) }}'
+
 
       # - name: Set environment variables based on branch
       #   id: set_vars
