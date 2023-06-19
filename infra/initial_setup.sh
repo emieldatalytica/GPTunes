@@ -27,6 +27,7 @@ gcloud services enable iam.googleapis.com --project=$PROJECT_ID
 gcloud services enable secretmanager.googleapis.com --project=$PROJECT_ID
 gcloud services enable artifactregistry.googleapis.com --project=$PROJECT_ID
 gcloud services enable run.googleapis.com --project=$PROJECT_ID
+gcloud services enable cloudresourcemanager.googleapis.com --project=$PROJECT_ID
 
 # Create the service account
 gcloud iam service-accounts create $SERVICE_ACCOUNT_ID \
