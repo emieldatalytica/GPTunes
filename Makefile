@@ -1,7 +1,10 @@
+# Default to dev if not set
+ENVIRONMENT ?= dev
+
 .PHONY: ci backend frontend dependencies infra
 
-# Load environment variables from the dev .env file
--include infra/envs/dev/.env
+# Load environment variables from the specified .env file
+-include infra/envs/$(ENVIRONMENT)/.env
 export
 
 # Format code using black and lint with flake8
@@ -44,17 +47,10 @@ dependencies:
 # Build GCP infrastructure with Terraform
 infra:
 	cd infra && \
+		gcloud config set project $(ENV_NAME) && \
 		terraform fmt && \
 		tflint && \
-		terraform init && \
+		terraform init --backend-config="bucket=$(GCP_BUCKET_NAME)" --reconfigure && \
 		terraform validate && \
-		terraform plan -out tfplan -var-file=envs/dev/config.tfvars && \
+		terraform plan -out tfplan -var-file=envs/$(ENVIRONMENT)/config.tfvars && \
 		terraform apply tfplan
-
-encode_sa_keys_dev:
-	@base64 -i /Users/emieldeheij/Documents/GPTunes/infra/envs/dev/gptunes-dev-27118a274ad3.json | pbcopy
-	@echo "Copied service account key to clipboard."
-
-encode_sa_keys_prod:
-	@base64 -i /Users/emieldeheij/Documents/GPTunes/infra/envs/main/gptunes.json | pbcopy
-	@echo "Copied service account key to clipboard."
