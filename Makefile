@@ -3,7 +3,7 @@ ENVIRONMENT ?= dev
 
 .PHONY: ci backend frontend dependencies infra
 
-# Load environment variables from the specified .env file
+# Load environment variables from the specified .env file (if it exists)
 -include infra/envs/$(ENVIRONMENT)/.env
 export
 
@@ -20,24 +20,24 @@ ci:
 
 # Build and run the backend with Docker locally
 backend:
-	hadolint --version
-	hadolint Dockerfile.backend
-	docker build -t $(BACKEND_IMAGE_NAME) -f Dockerfile.backend .
-	docker run -p 8080:8080 \
-		-v /Users/emieldeheij/Documents/GPTunes/infra/envs/dev:/ops \
-		-e GOOGLE_APPLICATION_CREDENTIALS=$(SA_CREDENTIALS) \
-		-e ENV_ID=$(ENV_ID) \
-		-e OPENAI_API_KEY=$(OPENAI_API_KEY) \
-		$(BACKEND_IMAGE_NAME)
+    hadolint --version
+    hadolint Dockerfile.backend
+    docker build -t $(BACKEND_IMAGE_NAME) -f Dockerfile.backend \
+        --build-arg GOOGLE_APPLICATION_CREDENTIALS=$(SA_CREDENTIALS) \
+        --build-arg ENV_ID=$(ENV_ID) \
+        --build-arg OPENAI_API_KEY=$(OPENAI_API_KEY) \
+        .
+    docker run -p 8080:8080 \
+        -v /Users/emieldeheij/Documents/GPTunes/infra/envs/dev:/ops \
+        $(BACKEND_IMAGE_NAME)
 
 # Build and run the frontend with Docker locally
 frontend:
 	FRONTEND_IMAGE_NAME=gptunes-frontend
 	hadolint --version
 	hadolint Dockerfile.frontend
-	docker build -t $(FRONTEND_IMAGE_NAME) -f Dockerfile.frontend .
+	docker build --build-arg DEBUG_MODE=$(DEBUG_MODE) -t $(FRONTEND_IMAGE_NAME) -f Dockerfile.frontend .
 	docker run -p 8050:8050 $(FRONTEND_IMAGE_NAME)
-
 
 # Compile and install updated dependencies
 dependencies:

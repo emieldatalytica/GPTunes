@@ -8,4 +8,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY src/ .
 
+ARG DEBUG_MODE
+ENV DEBUG_MODE=$DEBUG_MODE
+
 CMD ["python", "frontend.py"]

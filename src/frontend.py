@@ -1,3 +1,4 @@
+import os
 from typing import Tuple, Union
 
 import dash
@@ -67,4 +68,5 @@ def create_and_embed_playlist(
 
 
 if __name__ == "__main__":
-    app.run_server(debug=True, host="0.0.0.0", port=8050)
+    debug_mode = os.getenv("DEBUG_MODE", "False").lower() == "true"
+    app.run_server(debug=debug_mode, host="0.0.0.0", port=8050)
