@@ -20,6 +20,7 @@ fi
 PROJECT_ID="$ENV_NAME"
 SERVICE_ACCOUNT_ID="$ENV_NAME"
 SERVICE_ACCOUNT_DISPLAY_NAME="$ENV_NAME"
+BUCKET_NAME="$GCP_BUCKET_NAME"
 
 # Enable APIs
 gcloud services enable iam.googleapis.com --project=$PROJECT_ID
@@ -55,3 +56,28 @@ gcloud secrets create SA_CREDENTIALS \
 gcloud projects add-iam-policy-binding $PROJECT_ID \
     --member serviceAccount:$SERVICE_ACCOUNT_ID@$PROJECT_ID.iam.gserviceaccount.com \
     --role roles/secretmanager.secretAccessor
+
+# Give the service account the role to write to Artifact Registry
+gcloud projects add-iam-policy-binding $PROJECT_ID \
+    --member serviceAccount:$SERVICE_ACCOUNT_ID@$PROJECT_ID.iam.gserviceaccount.com \
+    --role roles/artifactregistry.writer
+
+# Give the service account the role to access the Storage bucket
+gcloud projects add-iam-policy-binding $PROJECT_ID \
+    --member serviceAccount:$SERVICE_ACCOUNT_ID@$PROJECT_ID.iam.gserviceaccount.com \
+    --role roles/storage.admin
+
+# Create 'gptunes-backend' repository
+gcloud artifacts repositories create gptunes-backend \
+    --repository-format=docker \
+    --location=europe-west4 \
+    --project=$PROJECT_ID
+
+# Create 'gptunes-frontend' repository
+gcloud artifacts repositories create gptunes-frontend \
+    --repository-format=docker \
+    --location=europe-west4 \
+    --project=$PROJECT_ID
+
+# Create a bucket to store the Terraform state remotely
+gsutil mb -p $PROJECT_ID gs://$BUCKET_NAME

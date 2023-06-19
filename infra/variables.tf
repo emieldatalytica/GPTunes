@@ -7,13 +7,6 @@ variable "gcp_region" {
 variable "gcp_project" {
   description = "GCP project"
   type        = string
-  default     = ""
-}
-
-variable "gcp_service_account" {
-  description = "GCP service account"
-  type        = string
-  default     = ""
 }
 
 variable "image_tag" {

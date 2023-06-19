@@ -17,6 +17,21 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
+      - name: Set environment variables based on branch
+        id: set_vars
+        run: |
+          if [ "${{ github.ref }}" = "refs/heads/main" ]; then
+            echo "env_id=${{ secrets.PROD_ENV_ID }}" >> $GITHUB_ENV
+            echo "openai_api_key=${{ secrets.PROD_OPENAI_API_KEY }}" >> $GITHUB_ENV
+            echo "project_id=gptunes" >> $GITHUB_ENV
+            echo "gcp_bucket_name=terraform_bucket_emiel_prod" >> $GITHUB_ENV
+          else
+            echo "env_id=${{ secrets.DEV_ENV_ID }}" >> $GITHUB_ENV
+            echo "openai_api_key=${{ secrets.DEV_OPENAI_API_KEY }}" >> $GITHUB_ENV
+            echo "project_id=gptunes-dev" >> $GITHUB_ENV
+            echo "gcp_bucket_name=terraform_bucket_emiel" >> $GITHUB_ENV
+          fi
+
       - id: 'auth'
         uses: 'google-github-actions/auth@v1'
         with:
@@ -25,24 +40,14 @@ jobs:
       - name: 'Set up Cloud SDK'
         uses: 'google-github-actions/setup-gcloud@v1'
 
-      - name: 'Use gcloud CLI'
+      - name: 'Configure gcloud CLI with project ID'
+        run: 'gcloud config set project ${{ env.project_id }}'
+
+      - name: 'Show active account'
         run: 'gcloud info'
 
       - name: Configure Docker
         run: gcloud auth configure-docker europe-west4-docker.pkg.dev
-
-      - name: Set ENV_ID and PROJECT_ID based on branch
-        id: set_vars
-        run: |
-          if [ "${{ github.ref }}" = "refs/heads/main" ]; then
-            echo "env_id=${{ secrets.PROD_ENV_ID }}" >> $GITHUB_ENV
-            echo "openai_api_key=${{ secrets.PROD_OPENAI_API_KEY }}" >> $GITHUB_ENV
-            echo "project_id=gptunes" >> $GITHUB_ENV
-          else
-            echo "env_id=${{ secrets.DEV_ENV_ID }}" >> $GITHUB_ENV
-            echo "openai_api_key=${{ secrets.DEV_OPENAI_API_KEY }}" >> $GITHUB_ENV
-            echo "project_id=gptunes-dev" >> $GITHUB_ENV
-          fi
 
       - name: Build and push Docker image for backend
         uses: docker/build-push-action@v4
@@ -71,7 +76,7 @@ jobs:
         uses: hashicorp/setup-terraform@v2
 
       - name: Terraform Init
-        run: terraform init
+        run: terraform init --backend-config="bucket=${{ env.gcp_bucket_name }}" --reconfigure
         working-directory: infra/
 
       - name: Terraform Apply
