@@ -4,12 +4,6 @@ resource "google_service_account" "gptunes_sa" {
   project      = var.gcp_project
 }
 
-resource "google_project_iam_member" "gptunes_sa_iam_admin" {
-  project = var.gcp_project
-  role    = "roles/iam.serviceAccountAdmin"
-  member  = "serviceAccount:${google_service_account.gptunes_sa.email}"
-}
-
 resource "google_project_iam_member" "gptunes_sa_secrets_accessor" {
   project = var.gcp_project
   role    = "roles/secretmanager.secretAccessor"

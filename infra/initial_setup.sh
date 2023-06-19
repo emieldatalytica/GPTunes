@@ -52,6 +52,11 @@ gcloud secrets create SA_CREDENTIALS \
     --data-file=$SERVICE_ACCOUNT_ID.json \
     --project=$PROJECT_ID
 
+# Give the service account the role to create other service accounts
+gcloud projects add-iam-policy-binding $PROJECT_ID \
+    --member serviceAccount:$SERVICE_ACCOUNT_ID@$PROJECT_ID.iam.gserviceaccount.com \
+    --role roles/iam.serviceAccountAdmin
+
 # Give the service account the role to access secrets
 gcloud projects add-iam-policy-binding $PROJECT_ID \
     --member serviceAccount:$SERVICE_ACCOUNT_ID@$PROJECT_ID.iam.gserviceaccount.com \
