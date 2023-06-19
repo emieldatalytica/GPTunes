@@ -67,6 +67,16 @@ jobs:
               europe-west4-docker.pkg.dev/${{ env.project_id }}/gptunes-frontend/gptunes-frontend:${{ github.sha }}
               europe-west4-docker.pkg.dev/${{ env.project_id }}/gptunes-frontend/gptunes-frontend:latest
 
+      - name: Setup Backend Config
+        run: |
+          if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
+            BRANCH="main"
+          else
+            BRANCH="dev"
+          fi
+          bash create_backend.sh "$BRANCH"
+        working-directory: infra/
+
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
 
