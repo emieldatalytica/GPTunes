@@ -20,16 +20,16 @@ ci:
 
 # Build and run the backend with Docker locally
 backend:
-    hadolint --version
-    hadolint Dockerfile.backend
-    docker build -t $(BACKEND_IMAGE_NAME) -f Dockerfile.backend \
-        --build-arg GOOGLE_APPLICATION_CREDENTIALS=$(SA_CREDENTIALS) \
-        --build-arg ENV_ID=$(ENV_ID) \
-        --build-arg OPENAI_API_KEY=$(OPENAI_API_KEY) \
-        .
-    docker run -p 8080:8080 \
-        -v /Users/emieldeheij/Documents/GPTunes/infra/envs/dev:/ops \
-        $(BACKEND_IMAGE_NAME)
+	hadolint --version
+	hadolint Dockerfile.backend
+	docker build -t $(BACKEND_IMAGE_NAME) -f Dockerfile.backend \
+	    --build-arg GOOGLE_APPLICATION_CREDENTIALS=$(SA_CREDENTIALS) \
+	    --build-arg ENV_ID=$(ENV_ID) \
+	    --build-arg OPENAI_API_KEY=$(OPENAI_API_KEY) \
+	    .
+	docker run -p 8080:8080 \
+	    -v /Users/emieldeheij/Documents/GPTunes/infra/envs/dev:/ops \
+	    $(BACKEND_IMAGE_NAME)
 
 # Build and run the frontend with Docker locally
 frontend:
