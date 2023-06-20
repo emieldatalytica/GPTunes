@@ -38,8 +38,8 @@ def create_and_embed_playlist(
     n_clicks: Union[int, None], value: Union[str, None]
 ) -> Tuple[Union[dcc.Markdown, None], Union[html.Iframe, None]]:
     if n_clicks == 1 and value is not None:
-        post_url = "http://0.0.0.0:8080/create_themed_playlist"  # local debugging
-        # post_url = "https://gptunes-api-lduyxfnclq-ez.a.run.app/create_themed_playlist"
+        # post_url = "http://0.0.0.0:8080/create_themed_playlist"  # local debugging
+        post_url = "https://gptunes-api-lduyxfnclq-ez.a.run.app/create_themed_playlist"
         response = requests.post(post_url, params={"theme": value})
         if response.status_code == 200:
             playlist_data = response.json()
