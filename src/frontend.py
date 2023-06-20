@@ -42,13 +42,15 @@ def create_and_embed_playlist(
         post_url = "https://gptunes-api-lduyxfnclq-ez.a.run.app/create_themed_playlist"
         response = requests.post(post_url, params={"theme": value})
         if response.status_code == 200:
-            playlist_url = response.json()
+            playlist_data = response.json()
+            playlist_url = playlist_data["url"]
+            playlist_description = playlist_data["description"]
 
             stripped_url = playlist_url.split("/")[-1].split("?")[0]
             src_url = f"https://open.spotify.com/embed/playlist/{stripped_url}?utm_source=generator?theme=0"
 
-            text = "Check out and follow your newly created playlist here!"
-            hyperlinked_string = f"[{text}]({playlist_url})"
+            text = "Follow your playlist here!"
+            hyperlinked_string = f"{playlist_description}\n\n[{text}]({playlist_url})"
 
             return dcc.Markdown(hyperlinked_string), html.Iframe(
                 src=src_url,

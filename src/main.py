@@ -1,5 +1,7 @@
 """This is the main module to generate a themed playlist on a weekly basis, piecing other modules together."""
 
+from typing import Dict
+
 import fastapi
 from fastapi import HTTPException
 from fastapi.responses import RedirectResponse
@@ -19,11 +21,14 @@ def docs_redirect() -> RedirectResponse:
 
 
 @main.post("/create_themed_playlist")
-def create_themed_playlist(theme: str) -> str:
+def create_themed_playlist(theme: str) -> Dict[str, str]:
     """Create a themed playlist and publish it to Spotify.
 
+    Raises:
+        HTTPException: If the playlist could not be created or published.
+
     Returns:
-        str: A message informing the user that the playlist has been successfully updated.
+        Dict[str, str]: The playlist url and description.
     """
     try:
         playlist = compose_playlist(theme=theme)
@@ -33,4 +38,4 @@ def create_themed_playlist(theme: str) -> str:
         logger.error(f"Failed to create and publish playlist: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
-    return url
+    return {"url": url, "description": playlist.description}
