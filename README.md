@@ -17,9 +17,9 @@ graph TD
     D --> F{input var = SHA}
     E --> F
     F --> G[Terraform apply Cloud Run Module]
-    G -->|Deploys| I[Cloud Run 'backend' service]
-    G -->|Deploys| H[Cloud Run 'frontend' service]
-    J[User] -.->|Sends theme to| I
-    I -.->|Posts theme to| H
-    H -.->|Compiles themed playlist and returns response| I
+    G -->|Deploys| H[Dash frontend hosted as Cloud Run service]
+    G -->|Deploys| I[Backend API hosted as Cloud Run service]
+    J[User] -.->|Sends theme to| H
+    H -.->|Posts theme to| I
+    I -.->|Creates themed playlist and returns response| H
 ```
