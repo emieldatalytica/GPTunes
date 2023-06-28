@@ -10,5 +10,10 @@ COPY src/ .
 
 ARG DEBUG_MODE
 ENV DEBUG_MODE=$DEBUG_MODE
+ARG POST_URL
+ENV POST_URL=$POST_URL
 
-CMD ["python", "frontend.py"]
+# Make the start script executable
+RUN chmod +x ./start_frontend.sh
+
+CMD ["./start_frontend.sh"]

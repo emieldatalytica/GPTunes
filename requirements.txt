@@ -89,6 +89,8 @@ grpcio==1.54.0
     #   grpcio-status
 grpcio-status==1.54.0
     # via google-api-core
+gunicorn==20.1.0
+    # via GPTunes (setup.cfg)
 h11==0.14.0
     # via uvicorn
 idna==3.4
@@ -194,3 +196,6 @@ yarl==1.8.2
     # via aiohttp
 zipp==3.15.0
     # via importlib-metadata
+
+# The following packages are considered to be unsafe in a requirements file:
+# setuptools

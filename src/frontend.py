@@ -7,6 +7,8 @@ from dash import dcc, html
 from dash.dependencies import Input, Output, State
 
 app = dash.Dash(__name__)
+server = app.server
+
 
 app.layout = html.Div(
     className="container",
@@ -38,8 +40,7 @@ def create_and_embed_playlist(
     n_clicks: Union[int, None], value: Union[str, None]
 ) -> Tuple[Union[dcc.Markdown, None], Union[html.Iframe, None]]:
     if n_clicks == 1 and value is not None:
-        # post_url = "http://0.0.0.0:8080/create_themed_playlist"  # local debugging
-        post_url = "https://gptunes-api-lduyxfnclq-ez.a.run.app/create_themed_playlist"
+        post_url = os.environ.get("POST_URL", "http://0.0.0.0:8080/create_themed_playlist")
         response = requests.post(post_url, params={"theme": value})
         if response.status_code == 200:
             playlist_data = response.json()
@@ -70,5 +71,5 @@ def create_and_embed_playlist(
 
 
 if __name__ == "__main__":
-    debug_mode = os.getenv("DEBUG_MODE", "False").lower() == "true"
+    debug_mode = os.environ.get("DEBUG_MODE", "True").lower() == "true"
     app.run_server(debug=debug_mode, host="0.0.0.0", port=8050)

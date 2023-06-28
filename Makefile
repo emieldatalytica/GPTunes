@@ -36,7 +36,10 @@ frontend:
 	FRONTEND_IMAGE_NAME=gptunes-frontend
 	hadolint --version
 	hadolint Dockerfile.frontend
-	docker build --build-arg DEBUG_MODE=$(DEBUG_MODE) -t $(FRONTEND_IMAGE_NAME) -f Dockerfile.frontend .
+	docker build -t $(FRONTEND_IMAGE_NAME) -f Dockerfile.frontend \
+	--build-arg DEBUG_MODE=$(DEBUG_MODE) \
+	--build-arg POST_URL=$(POST_URL) \
+	.
 	docker run -p 8050:8050 $(FRONTEND_IMAGE_NAME)
 
 # Compile and install updated dependencies

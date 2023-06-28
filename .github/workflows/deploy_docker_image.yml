@@ -26,12 +26,14 @@ jobs:
             echo "project_id=gptunes" >> $GITHUB_ENV
             echo "gcp_bucket_name=terraform_bucket_emiel_prod" >> $GITHUB_ENV
             echo "debug_mode=False" >> $GITHUB_ENV
+            echo "post_url=${{ secrets.PROD_POST_URL }}" >> $GITHUB_ENV
           else
             echo "env_id=${{ secrets.DEV_ENV_ID }}" >> $GITHUB_ENV
             echo "openai_api_key=${{ secrets.DEV_OPENAI_API_KEY }}" >> $GITHUB_ENV
             echo "project_id=gptunes-dev" >> $GITHUB_ENV
             echo "gcp_bucket_name=terraform_bucket_emiel" >> $GITHUB_ENV
             echo "debug_mode=True" >> $GITHUB_ENV
+            echo "post_url=${{ secrets.DEV_POST_URL }}" >> $GITHUB_ENV
           fi
 
       - id: 'auth'
@@ -75,6 +77,7 @@ jobs:
               europe-west4-docker.pkg.dev/${{ env.project_id }}/gptunes-frontend/gptunes-frontend:latest
           build-args: |
               DEBUG_MODE=${{ env.debug_mode }}
+              POST_URL=${{ env.post_url }}
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
