@@ -8,7 +8,7 @@ from dash.dependencies import Input, Output, State
 
 external_stylesheets = ["https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"]
 
-app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
+app = dash.Dash(__name__, external_stylesheets=external_stylesheets, title="GPTunes")
 server = app.server
 
 
