@@ -59,7 +59,7 @@ body {
 
 .output {
     font-size: 18px;
-    font-family: 'Roboto', sans-serif;
+    font-family: 'Futura', sans-serif;
     padding: 10px;
     border: 1px solid #dddddd00;
     border-radius: 5px;
@@ -69,6 +69,10 @@ body {
     display: flex;
     justify-content: center;
     margin-bottom: 20px;
+}
+
+.icons a {
+    text-decoration: none;
 }
 
 .linkedin, .github {

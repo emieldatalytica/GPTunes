@@ -6,10 +6,7 @@ import requests  # type: ignore
 from dash import dcc, html
 from dash.dependencies import Input, Output, State
 
-external_stylesheets = [
-    "https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css",
-    "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css",
-]
+external_stylesheets = ["https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"]
 
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 server = app.server
@@ -84,5 +81,5 @@ def create_and_embed_playlist(
 
 
 if __name__ == "__main__":
-    debug_mode = os.environ.get("DEBUG_MODE", "True").lower() == "true"
+    debug_mode = os.getenv("DEBUG_MODE", "True").lower() == "true"
     app.run_server(debug=debug_mode, host="0.0.0.0", port=8050)
