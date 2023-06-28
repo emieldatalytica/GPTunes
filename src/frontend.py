@@ -6,17 +6,30 @@ import requests  # type: ignore
 from dash import dcc, html
 from dash.dependencies import Input, Output, State
 
-app = dash.Dash(__name__)
+external_stylesheets = [
+    "https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css",
+    "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css",
+]
+
+app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 server = app.server
 
 
 app.layout = html.Div(
-    className="container",
+    className="container-fluid",
     children=[
         html.Div(
             className="content",
             children=[
-                html.H1("Generate your themed playlist with AI", className="title"),
+                html.Div(
+                    className="icons",
+                    children=[
+                        html.A(className="github", href="https://github.com/emieldatalytica/GPTunes", target="_blank"),
+                        html.A(className="linkedin", href="https://www.linkedin.com/in/emieldeheij/", target="_blank"),
+                    ],
+                ),
+                html.H1("🎶  GPTunes  🎶", className="title"),
+                html.H3("Craft your themed Spotify playlist with AI!", className="subtitle"),
                 dcc.Input(id="input-field", type="text", placeholder="Enter a theme here", className="input"),
                 html.Button("Submit", id="submit-button", className="button"),
                 dcc.Loading(
