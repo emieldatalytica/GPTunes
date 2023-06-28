@@ -20,4 +20,4 @@ INITIAL_PROMPT = """
         Assistant:
         """
 
-DALLE_PROMPT = "'{playlist_title}', music, digital art"
+DALLE_PROMPT = "{playlist_title}, music, digital art"
