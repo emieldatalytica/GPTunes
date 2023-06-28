@@ -6,15 +6,27 @@ import requests  # type: ignore
 from dash import dcc, html
 from dash.dependencies import Input, Output, State
 
-app = dash.Dash(__name__)
+external_stylesheets = ["https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"]
+
+app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
+server = app.server
+
 
 app.layout = html.Div(
-    className="container",
+    className="container-fluid",
     children=[
         html.Div(
             className="content",
             children=[
-                html.H1("Generate your themed playlist with AI", className="title"),
+                html.Div(
+                    className="icons",
+                    children=[
+                        html.A(className="github", href="https://github.com/emieldatalytica/GPTunes", target="_blank"),
+                        html.A(className="linkedin", href="https://www.linkedin.com/in/emieldeheij/", target="_blank"),
+                    ],
+                ),
+                html.H1("🎶  GPTunes  🎶", className="title"),
+                html.H3("Craft your themed Spotify playlist with AI!", className="subtitle"),
                 dcc.Input(id="input-field", type="text", placeholder="Enter a theme here", className="input"),
                 html.Button("Submit", id="submit-button", className="button"),
                 dcc.Loading(
@@ -38,8 +50,7 @@ def create_and_embed_playlist(
     n_clicks: Union[int, None], value: Union[str, None]
 ) -> Tuple[Union[dcc.Markdown, None], Union[html.Iframe, None]]:
     if n_clicks == 1 and value is not None:
-        # post_url = "http://0.0.0.0:8080/create_themed_playlist"  # local debugging
-        post_url = "https://gptunes-api-lduyxfnclq-ez.a.run.app/create_themed_playlist"
+        post_url = os.environ.get("POST_URL", "http://0.0.0.0:8080/create_themed_playlist")
         response = requests.post(post_url, params={"theme": value})
         if response.status_code == 200:
             playlist_data = response.json()
@@ -70,5 +81,5 @@ def create_and_embed_playlist(
 
 
 if __name__ == "__main__":
-    debug_mode = os.getenv("DEBUG_MODE", "False").lower() == "true"
+    debug_mode = os.getenv("DEBUG_MODE", "True").lower() == "true"
     app.run_server(debug=debug_mode, host="0.0.0.0", port=8050)
