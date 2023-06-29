@@ -32,16 +32,13 @@ def query_model_for_playlist(theme: str) -> str:
     Returns:
         str: The model response in json-format.
     """
-    try:
-        completion = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo",
-            messages=[
-                {"role": "user", "content": INITIAL_PROMPT.replace("{theme}", theme)},
-            ],
-            temperature=0.8,
-        )
-    except RateLimitError:
-        raise HTTPException(status_code=429, detail="OpenAI API is currently overloaded.")
+    completion = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo-0613",
+        messages=[
+            {"role": "user", "content": INITIAL_PROMPT.replace("{theme}", theme)},
+        ],
+        temperature=0.8,
+    )
     return completion.choices[0].message["content"]  # type: ignore
 
 
@@ -111,17 +108,28 @@ def compose_playlist(theme: str) -> Any:
         Playlist: The composed playlist with tracks, title and description.
     """
     logger.info(f"Given theme: '{theme}'")
-    gpt_response = query_model_for_playlist(theme)
-    logger.info(f"Received response from GPT model: '{gpt_response}'")
+    try:
+        gpt_response = query_model_for_playlist(theme)
+    except RateLimitError:
+        logger.error("OpenAI API usage limit has been hit.")
+        raise HTTPException(
+            status_code=429, detail="OpenAI API usage limit has been hit. Maybe ask the creator to up the limit?"
+        )
+    except Exception as e:
+        logger.error(f"An error occurred while querying the GPT model: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
     playlist_json = extract_json_from_response(gpt_response)
 
     if not isinstance(playlist_json, dict):
+        logger.error(f"The GPT response could not be processed into a structured dictionary: {playlist_json}")
         raise HTTPException(
             status_code=500,
             detail="The GPT response could not be processed into a structured dictionary. "
             "Maybe try again with a different theme?",
         )
     if not all(key in playlist_json.keys() for key in ["tracks", "title", "description"]):
+        logger.error(f"The GPT response does not have keys 'tracks', 'title' and 'description': {playlist_json}")
         raise HTTPException(
             status_code=500,
             detail="The GPT response does not have keys 'tracks', 'title' and 'description'. "
@@ -129,7 +137,12 @@ def compose_playlist(theme: str) -> Any:
         )
     logger.info(f"Extracted playlist with {len(playlist_json['tracks'].keys())} tracks from GPT response.")
 
-    playlist_json["cover_image"] = create_cover_image(playlist_json["title"])
+    try:
+        playlist_json["cover_image"] = create_cover_image(playlist_json["title"])
+    except Exception as e:
+        # Only log error, don't raise exception since playlist can be created without cover image
+        logger.error(f"An error occurred while generating the cover image: {e}")
+        playlist_json["cover_image"] = None
 
     track_ids = map_tracks_to_spotify_ids(playlist_json["tracks"])
     playlist_json["tracks"] = list(track_ids.values())

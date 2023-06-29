@@ -34,6 +34,9 @@ def create_themed_playlist(theme: str) -> Dict[str, str]:
         playlist = compose_playlist(theme=theme)
         logger.info(f"Sending playlist titled '{playlist.title}' to publisher-service.")
         url = publish_playlist_to_spotify(playlist)
+    except HTTPException as e:
+        # Re-raise HTTPExceptions so the correct status code and message is sent
+        raise e
     except Exception as e:
         logger.error(f"Failed to create and publish playlist: {e}")
         raise HTTPException(status_code=500, detail=str(e))
