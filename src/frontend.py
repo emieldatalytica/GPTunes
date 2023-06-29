@@ -71,10 +71,7 @@ def create_and_embed_playlist(
                 allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture",
             )
         else:
-            error_message = (
-                f"There was an error in creating the playlist. Status code: {response.status_code}. "
-                f"Message: {response.text}"
-            )
+            error_message = f"Oh no, an error occurred! Message: {response.json().get('detail', 'Unknown')}"
             return error_message, None
 
     return None, None

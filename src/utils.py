@@ -3,6 +3,7 @@
 import json
 import logging
 import os
+from typing import Union
 
 import dirtyjson
 import spotipy
@@ -16,7 +17,7 @@ class Playlist(BaseModel):
 
     title: str
     description: str = Field(max_length=1000)
-    cover_image: str
+    cover_image: Union[str, None]
     tracks: list
 
 
