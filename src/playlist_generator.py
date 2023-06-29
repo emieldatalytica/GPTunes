@@ -33,7 +33,7 @@ def query_model_for_playlist(theme: str) -> str:
         str: The model response in json-format.
     """
     completion = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",
+        model="gpt-3.5-turbo-0613",
         messages=[
             {"role": "user", "content": INITIAL_PROMPT.replace("{theme}", theme)},
         ],
