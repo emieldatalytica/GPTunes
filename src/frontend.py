@@ -28,7 +28,7 @@ app.layout = html.Div(
                 html.H1("🎶  GPTunes  🎶", className="title"),
                 html.H3("Craft your themed Spotify playlist with AI!", className="subtitle"),
                 dcc.Input(id="input-field", type="text", placeholder="Enter a theme here", className="input"),
-                html.Button("Submit", id="submit-button", className="button"),
+                html.Button("Submit", id="submit-button", className="button", n_clicks=0),
                 dcc.Loading(
                     id="loading-icon",
                     children=[html.Div(id="output-field", className="output"), html.Div(id="playlist-embed")],
@@ -75,6 +75,17 @@ def create_and_embed_playlist(
             return error_message, None
 
     return None, None
+
+
+@app.callback(
+    Output("submit-button", "children"),
+    Input("submit-button", "n_clicks"),
+    State("input-field", "value"),
+)
+def update_button(n_clicks: Union[int, None], value: Union[str, None]) -> str:
+    if n_clicks and value:
+        return "Give us half a minute, we're backstage setting up your tunes! 🎸"
+    return "Submit"
 
 
 if __name__ == "__main__":
